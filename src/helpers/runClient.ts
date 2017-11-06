@@ -1,0 +1,30 @@
+import * as vscode from 'vscode';
+import * as path from 'path';
+import { spawn, exec } from 'child_process';
+import * as fs from 'fs';
+import { getSteamPath } from './getSteamPath'
+import { getConfig } from '../commands/setupConfig'
+import { ArmaConfig } from '../models'
+
+const Arma3Folder = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3';
+const Arma3AppData = process.env.LOCALAPPDATA + path.sep + "Arma 3";
+let fsWatcher : fs.FSWatcher
+
+export async function runClient(withLogging?: boolean): Promise<string> {
+    let steamPath = await getSteamPath();
+    let config = getConfig();
+
+    if(fsWatcher === undefined && withLogging) {
+        fsWatcher = fs.watch(Arma3AppData, openClientLog);
+    }
+
+    return new Promise<string>((resolve, reject) => {
+        let Arma3BattleyeExe = steamPath + Arma3Folder + path.sep + "arma3battleye.exe";
+        spawn(Arma3BattleyeExe, ['2','1','0','-exe','arma3_x64.exe', '-mod=@Exile', '-nosplash', '-world empty', '-skipIntro']);
+    });
+}
+
+export async function openClientLog(event: string ,fileName: string) : Promise<void> {
+    fsWatcher.close();
+    vscode.workspace.openTextDocument( Arma3AppData + path.sep + fileName).then((doc) => vscode.window.showTextDocument(doc));
+}

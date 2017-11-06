@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { getSteamPath } from './helpers/getSteamPath';
 import * as setupConfig from './commands/setupConfig';
 import * as packFolders from './commands/packFolders';
+import * as runClient from './commands/runClient';
 
 
 // this method is called when your extension is activated
@@ -12,6 +13,7 @@ import * as packFolders from './commands/packFolders';
 export function activate(context: vscode.ExtensionContext) {
     setupConfig.activate(context);
     packFolders.activate(context);
+    runClient.activate(context);
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json

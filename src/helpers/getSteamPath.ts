@@ -19,11 +19,12 @@ export async function getSteamPath(): Promise<string> {
                 return;
             }
 
-            let installPath = stdout.toString().match(/SteamPath\s+REG_SZ\s+([^\r\n]+)\s*\r?\n/i)[1];
+            let installPath : string;
+            installPath = stdout.toString().match(/SteamPath\s+REG_SZ\s+([^\r\n]+)\s*\r?\n/i)[1];
           
             if (installPath) {
-                steamPath = installPath;
-                resolve(installPath);
+                steamPath = installPath.replace("/", "\\");
+                resolve(steamPath);
             } else {
                 reject();
             }

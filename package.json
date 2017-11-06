@@ -22,6 +22,12 @@
         },{
             "command": "armadev.packFolders",
             "title": "Arma3: Pack"
+        },{
+            "command": "armadev.runClientAndLog",
+            "title": "Arma3: Run Client (with logging)"
+        },{
+            "command": "armadev.runClient",
+            "title": "Arma3: Run Client"
         }]
     },
     "scripts": {
