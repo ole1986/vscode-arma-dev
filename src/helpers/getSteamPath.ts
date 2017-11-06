@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { spawn, exec } from 'child_process';
 import * as fs from 'fs';
+import * as logger from '../logger'
 
 let steamPath: string;
 
@@ -23,7 +24,8 @@ export async function getSteamPath(): Promise<string> {
             installPath = stdout.toString().match(/SteamPath\s+REG_SZ\s+([^\r\n]+)\s*\r?\n/i)[1];
           
             if (installPath) {
-                steamPath = installPath.replace("/", "\\");
+                steamPath = installPath.replace(/\//g, "\\");
+                logger.logDebug("Steam installation found in " + steamPath);
                 resolve(steamPath);
             } else {
                 reject();

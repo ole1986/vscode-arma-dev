@@ -28,7 +28,18 @@
         },{
             "command": "armadev.runClient",
             "title": "Arma3: Run Client"
-        }]
+        }],
+        "configuration": {
+            "type": "object",
+			"title": "Arma Dev Configuration",
+			"properties": {
+				"arma-dev.logLevel": {
+					"type": "string",
+					"default": "Debug",
+					"description": "Log Level [Debug|Info|Error]"
+				}
+			}
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

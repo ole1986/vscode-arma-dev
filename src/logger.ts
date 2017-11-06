@@ -2,18 +2,18 @@ import * as vscode from 'vscode';
 
 let outInfoChannel: vscode.OutputChannel;
 let outLogChannel: vscode.OutputChannel;
-const logLevel = <string>vscode.workspace.getConfiguration('gitHistory').get('logLevel');
+const logLevel = <string>vscode.workspace.getConfiguration('arma-dev').get('logLevel');
 
 function getInfoChannel() {
     if (outInfoChannel === undefined) {
-         outInfoChannel = vscode.window.createOutputChannel('Tasks');
+         outInfoChannel = vscode.window.createOutputChannel('Arma Dev Log');
     }
     return outInfoChannel;
 }
 
 function getLogChannel() {
     if (outLogChannel === undefined) {
-         outLogChannel = vscode.window.createOutputChannel('Tasks');
+         outLogChannel = vscode.window.createOutputChannel('Arma Dev Log');
     }
     return outLogChannel;
 }
@@ -21,12 +21,13 @@ function getLogChannel() {
 export function logError(error: any) {
     getLogChannel().appendLine(`[Error-${getTimeAndms()}] ${error.toString()}`.replace(/(\r\n|\n|\r)/gm, ''));
     getLogChannel().show();
-    vscode.window.showErrorMessage('There was an error, please view details in the \'Tasks\' output window');
+    vscode.window.showErrorMessage('There was an error, please view details in the \'Arma Dev Log\' output window');
 }
 
 export function logInfo(message: string) {
     if (logLevel === 'Info' || logLevel === 'Debug') {
         getLogChannel().appendLine(`[Info -${getTimeAndms()}] ${message}`);
+        getLogChannel().show();
     }
 }
 

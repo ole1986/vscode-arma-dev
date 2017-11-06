@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { getSteamPath } from './getSteamPath'
 import { getConfig } from '../commands/setupConfig'
 import { ArmaConfig } from '../models'
+import * as logger from '../logger'
 
 const Arma3Tools = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3 Tools';
 
@@ -55,10 +56,12 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean) : Promis
         } 
 
         let prefixValue = fs.readFileSync(folderDir + path.sep + prefixFile, "UTF-8");
+
+        logger.logInfo("Packing " + folderDir + " using FileBank (prefix: "+prefixValue+")");
         exec("\"" + fileBankPath + "\" -property prefix=" + prefixValue + " -dst \"" + vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name + "Server" + path.sep + "addons\" \"" + folderDir + "\"");
-    });    
+    });
 }
 
 async function  packWithAddonBuilder(folderDir: string, signFile: string ) {
-
+    
 }

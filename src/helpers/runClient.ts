@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { getSteamPath } from './getSteamPath'
 import { getConfig } from '../commands/setupConfig'
 import { ArmaConfig } from '../models'
+import * as logger from '../logger'
 
 const Arma3Folder = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3';
 const Arma3AppData = process.env.LOCALAPPDATA + path.sep + "Arma 3";
@@ -15,12 +16,16 @@ export async function runClient(withLogging?: boolean): Promise<string> {
     let config = getConfig();
 
     if(fsWatcher === undefined && withLogging) {
+        logger.logDebug("Watching for arma3 log files");
         fsWatcher = fs.watch(Arma3AppData, openClientLog);
     }
 
     return new Promise<string>((resolve, reject) => {
         let Arma3BattleyeExe = steamPath + Arma3Folder + path.sep + "arma3battleye.exe";
-        spawn(Arma3BattleyeExe, ['2','1','0','-exe','arma3_x64.exe', '-mod=@Exile', '-nosplash', '-world empty', '-skipIntro']);
+
+        logger.logInfo("Running Arma3 using its battleye exe");
+        // TODO: start arma with mods selected from configuration
+        spawn(Arma3BattleyeExe, ['2','1','0','-exe','arma3_x64.exe', '-mod=', '-nosplash', '-world empty', '-skipIntro']);
     });
 }
 

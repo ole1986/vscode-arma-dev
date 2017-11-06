@@ -57,10 +57,10 @@ export function updateConfig(content : string) {
     config = JSON.parse(content);
 
     config.serverDirs.forEach((p, i) => {
-        config.serverDirs[i] = p.replace('/', path.sep);
+        config.serverDirs[i] = p.replace(/\//g, "\\");
     });
 
     config.clientDirs.forEach((p, i) => {
-        config.clientDirs[i] = p.replace('/', path.sep);
+        config.clientDirs[i] = p.replace(/\//g, "\\");
     });
 }
