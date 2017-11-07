@@ -152,7 +152,7 @@ async function addModInfo(modDir: string) {
     let destPath = modDir + path.sep + "mod.cpp";
     let data: string = "";
 
-    data += 'name = "'+config.title+' (v'+config.version+')"\n';
+    data += 'name = "' + config.title + '<br /><t size=\'2\' color=\'#ffff00\'>v'+ config.version +'</t>"\n';
     if(config.website) {
         data += 'actionName = "Website"\n';
         data += 'action = "'+config.website+'"\n';
