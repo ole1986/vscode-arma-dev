@@ -20,6 +20,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
     if (steamPath === undefined) return;
 
     let config = ArmaDev.Self.Config;
+    let clientModPath = path.normalize(vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name);
 
     if (fsWatcher === undefined && withLogging) {
         logger.logDebug('Watching for arma3 log files');
@@ -30,12 +31,18 @@ export async function runClient(withLogging?: boolean): Promise<string> {
         let Arma3BattleyeExe = steamPath + Arma3Folder + path.sep + 'arma3battleye.exe';
 
         logger.logInfo('Running Arma3 using its battleye exe');
-        // TODO: start arma with mods selected from configuration
-        spawn(Arma3BattleyeExe, ['2', '1', '0', '-exe', 'arma3_x64.exe', '-mod=', '-nosplash', '-world empty', '-skipIntro']);
+
+        let additionalMods = '';
+        if(config.clientMods.length > 0) {
+            additionalMods = ';' + config.clientMods.join(';');
+        }
+
+        spawn(Arma3BattleyeExe, ['2', '1', '0', '-exe', 'arma3_x64.exe', '-mod=' + clientModPath + additionalMods, '-nosplash', '-world empty', '-skipIntro']);
     });
 }
 
 async function openClientLog(event: string , fileName: string): Promise<void> {
     fsWatcher.close();
+    fsWatcher = undefined;
     vscode.workspace.openTextDocument( Arma3AppData + path.sep + fileName).then((doc) => vscode.window.showTextDocument(doc));
 }

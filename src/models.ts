@@ -7,6 +7,7 @@ export interface ArmaConfig {
     buildPath: string;
     serverDirs: string[];
     clientDirs: string[];
+    clientMods: string[];
     privateKey: string;
 }
 

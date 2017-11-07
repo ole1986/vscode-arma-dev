@@ -46,6 +46,7 @@ export class ArmaDev {
                 config.privateKey = '';
                 config.serverDirs = ['src/server_core', 'src/server_config'];
                 config.clientDirs = ['src/client'];
+                config.clientMods = [];
 
                 let vscodeDir = path.dirname(this.configPath);
 
