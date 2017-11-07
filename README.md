@@ -45,6 +45,8 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * Arma 3 Tools (http://store.steampowered.com/app/233800/Arma_3_Tools/?l=german)
 * Visual Studio Code
 
+PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
+
 ## Extension Settings
 
 * `arma-dev.logLevel`: setup the log level (Info | Debug | Error)

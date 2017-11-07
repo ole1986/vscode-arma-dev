@@ -48,7 +48,7 @@ export class ArmaDevCommands {
                     if (ok) {
                         vscode.window.showQuickPick(["Yes", "No"], { placeHolder: "Save privateKey into configuration?" }).then((value) => { 
                             if (value == 'Yes') {
-                                ArmaDev.Self.Config.privateKey = ArmaDev.Self.Config.name + '.key';
+                                ArmaDev.Self.Config.privateKey = ArmaDev.Self.Config.name + '.biprivatekey';
                                 ArmaDev.Self.saveConfig();
                             }
                         });

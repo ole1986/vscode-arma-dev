@@ -35,6 +35,7 @@ export class ArmaDev {
                 let config = {} as ArmaConfig;
                 config.title = "Your Arma 3 Extension Name";
                 config.name = "ShortExtName";
+                config.author = "yourName";
                 config.website = 'http://yourwebsite.tld';
                 config.version = "0.0.1";
                 config.buildPath = "build";

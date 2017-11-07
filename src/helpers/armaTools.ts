@@ -22,8 +22,12 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
             return;
         }
 
+        if(!fs.existsSync(vscode.workspace.rootPath + path.sep + config.buildPath)) {
+            fs.mkdirSync(vscode.workspace.rootPath + path.sep + config.buildPath);
+        }
+
         config.serverDirs.forEach(p => {
-            packWithFileBank(vscode.workspace.rootPath + path.sep + p, withPrefix).catch(reject);
+            packWithFileBank(p, withPrefix).catch(reject);
         });
 
         // make sure client folder exist
@@ -33,7 +37,7 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
         }
 
         config.clientDirs.forEach(p => {
-            packWithAddonBuilder(vscode.workspace.rootPath + path.sep + p, false, config.privateKey);
+            packWithAddonBuilder(p, false, true).catch(reject);
         });
 
         addModInfo(clientPath);
@@ -82,12 +86,19 @@ export async function unbinarizeConfig(filePath: string) : Promise<boolean> {
 }
 
 export async function generateKey() : Promise<boolean> {
-    //steamPath = await getSteamPath();
+    steamPath = await getSteamPath();
     let config = ArmaDev.Self.Config;
 
     return new Promise<boolean>((resolve, reject) => {
-        let dsCreatePath = steamPath + Arma3Tools + path.sep + "DSSign" + path.sep + "DSCreateKey.exe";
-        exec(dsCreatePath + "\""+ config.name +"\"").on('error', reject).on('exit', (code) => { 
+        let possiblePrivateKey = config.name.toLowerCase();
+
+        if(fs.existsSync(vscode.workspace.rootPath + path.sep + possiblePrivateKey)) {
+            vscode.window.showInformationMessage("PrivateKey already exist");
+            return;
+        }
+
+        let dsCreatePath = steamPath + Arma3Tools + path.sep + "DSSignFile" + path.sep + "DSCreateKey.exe";
+        spawn(dsCreatePath, [possiblePrivateKey], { cwd: vscode.workspace.rootPath }).on('error', reject).on('exit', (code) => {
             resolve(code === 0);
         });
     });
@@ -100,14 +111,14 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean) : Promis
     return new Promise<boolean>((resolve, reject) => {
         let prefixFile;
 
-        if(fs.existsSync(fileBankPath)) {
+        if(!fs.existsSync(fileBankPath)) {
             reject("FileBank not found");
             return;
         }
 
         if(withPrefix) {
             ["$PBOPREFIX$", "$PREFIX$"].forEach(p => {
-                let found = fs.existsSync(folderDir + path.sep + p);
+                let found = fs.existsSync(vscode.workspace.rootPath + path.sep + folderDir + path.sep + p);
                 if(found) {
                     prefixFile = p;
                     return;
@@ -120,36 +131,40 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean) : Promis
             }
         } 
 
-        let prefixValue = fs.readFileSync(folderDir + path.sep + prefixFile, "UTF-8");
+        let prefixValue = fs.readFileSync(vscode.workspace.rootPath + path.sep + folderDir + path.sep + prefixFile, "UTF-8");
 
         logger.logInfo("Packing " + folderDir + " using FileBank (prefix: "+prefixValue+")");
-        exec("\"" + fileBankPath + "\" -property prefix=" + prefixValue + " -dst \"" + vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name + "Server" + path.sep + "addons\" \"" + folderDir + "\"");
+        spawn(fileBankPath, ["-property", "prefix=" + prefixValue, "-dst", config.buildPath + path.sep + "@" + config.name + "Server" + path.sep + "addons", folderDir],  { cwd: vscode.workspace.rootPath })
     });
 }
 
-async function packWithAddonBuilder(folderDir: string, binarize: boolean, keyFile?: string ) : Promise<boolean> {
+async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: boolean ) : Promise<boolean> {
     let config = ArmaDev.Self.Config;
     let addonBuilderPath = steamPath + Arma3Tools + path.sep + "AddonBuilder" + path.sep + "AddonBuilder.exe";
-    let args : string[] = [];
-    let buildPath: string = vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name + path.sep + "addons";
-    let privateKeyPath: string = vscode.workspace.rootPath + path.sep + config.privateKey;
+    
+    let privateKey = config.privateKey.toLowerCase();
+    let fullFolderPath: string = vscode.workspace.rootPath + path.sep + folderDir;
+    let fullBuildPath: string = vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name + path.sep + "addons";
+    let fullPrivateKeyPath: string = vscode.workspace.rootPath + path.sep + privateKey;
 
     return new Promise<boolean>((resolve, reject) => {
         
-        if (fs.existsSync(addonBuilderPath)) {
+        if (!fs.existsSync(addonBuilderPath)) {
             reject("AddonBuilder not found");
             return;
         }
 
-        args.push(folderDir, buildPath);
+        let args = [];
+
+        args.push(fullFolderPath, fullBuildPath);
         args.push("-clear");
 
-        if (keyFile && fs.existsSync(privateKeyPath)) {
-            args.push("-sign=" + privateKeyPath);
+        if (sign && privateKey && fs.existsSync(fullPrivateKeyPath)) {
+            args.push("-sign=" + fullPrivateKeyPath);
         }
 
         logger.logInfo("Packing " + folderDir + " using AddonBuilder");
-        spawn(addonBuilderPath, args).on('error', reject);
+        spawn(addonBuilderPath, args, {cwd: vscode.workspace.rootPath}).on('error', reject);
     });
 }
 
@@ -158,7 +173,9 @@ async function addModInfo(modDir: string) {
     let destPath = modDir + path.sep + "mod.cpp";
     let data: string = "";
 
-    data += 'name = "' + config.title + '<br /><t size=\'2\' color=\'#ffff00\'>v'+ config.version +'</t>"\n';
+    data += 'name = "' + config.title + ' [v'+ config.version +']"\n';
+    data += 'author = "'+config.author+'"\n';
+    
     if(config.website) {
         data += 'actionName = "Website"\n';
         data += 'action = "'+config.website+'"\n';

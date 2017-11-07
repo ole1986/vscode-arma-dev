@@ -1,6 +1,7 @@
 export interface ArmaConfig {
     title: string;
     name: string;
+    author: string;
     website: string;
     version: string;
     buildPath: string;

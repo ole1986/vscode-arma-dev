@@ -3,7 +3,7 @@ import * as path from 'path';
 import { spawn, exec } from 'child_process';
 import * as fs from 'fs';
 import { getSteamPath } from './getSteamPath'
-import { getConfig } from '../commands/setupConfig'
+import { ArmaDev } from '../armadev'
 import { ArmaConfig } from '../models'
 import * as logger from '../logger'
 
@@ -13,7 +13,7 @@ let fsWatcher : fs.FSWatcher
 
 export async function runClient(withLogging?: boolean): Promise<string> {
     let steamPath = await getSteamPath();
-    let config = getConfig();
+    let config = ArmaDev.Self.Config;
 
     if(fsWatcher === undefined && withLogging) {
         logger.logDebug("Watching for arma3 log files");
