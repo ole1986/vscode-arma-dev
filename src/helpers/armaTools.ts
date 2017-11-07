@@ -3,8 +3,9 @@ import * as path from 'path';
 import { spawn, exec } from 'child_process';
 import * as fs from 'fs';
 import { getSteamPath } from './getSteamPath'
-import { getConfig } from '../commands/setupConfig'
+import { ArmaDev } from '../armadev'
 import { ArmaConfig } from '../models'
+
 import * as logger from '../logger'
 
 const Arma3Tools = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3 Tools';
@@ -14,7 +15,7 @@ let config : ArmaConfig;
 
 export async function packFolder(withPrefix: boolean): Promise<string> {
     steamPath = await getSteamPath();
-    config = getConfig();
+    config = ArmaDev.Self.Config;
 
     return new Promise<string>((resolve, reject) => {
         if(!steamPath) {
@@ -87,6 +88,13 @@ export async function unbinarizeConfig(filePath: string) : Promise<boolean> {
         }
         
         spawn(cfgconvertPath, ['-txt', '-dst', destPath, filePath]).on('error', reject);
+    });
+}
+
+export async function DSCreateKey() : Promise<boolean> {
+    var dsCreatePath = Arma3Tools + path.sep + "DSSign" + path.sep + "DSCreateKey.exe";
+    return new Promise<boolean>((resolve, reject) => {
+        exec(dsCreatePath + "\""+ config.name +"\"").on('error', reject).on('exit', (code) => { if(code == 0) resolve(true); } );
     });
 }
 
