@@ -2,7 +2,7 @@
     "name": "arma-dev",
     "displayName": "Arma Dev",
     "description": "Arma 3 Developer automation tools",
-    "icon": "https://ole1986.visualstudio.com/a083f3ae-fb0c-4b78-9209-68cbac456231/_api/_versioncontrol/itemContent?repositoryId=e97d0292-6c05-492c-967d-28976581a8e6&path=%2Fimages%2Farma-dev-logo.png&version=GBmaster&contentOnly=true&__v=5",
+    "icon": "images/arma-dev-logo.png",
     "version": "0.0.1",
     "publisher": "ole1986",
     "engines": {
