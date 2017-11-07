@@ -28,6 +28,7 @@ export async function getSteamPath(): Promise<string> {
                 logger.logDebug("Steam installation found in " + steamPath);
                 resolve(steamPath);
             } else {
+                steamPath = undefined;
                 reject();
             }
         };

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as logger from '../logger'
-import { packFolder } from '../helpers/packFolder'
+import { packFolder } from '../helpers/armaTools'
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('armadev.packFolders', () => {

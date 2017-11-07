@@ -22,8 +22,10 @@ Below you can find all available commands
 
 * `Arma 3: Configure`: to setup the project
 * `Arma 3: Pack`: to pack pbos defined in your configuration file
+* `Arma 3: Binarize`: binarize cpp files from explorer context menu
+* `Arma 3: UnBinarize`: Unbinarize bin files from explorer context menu
 * `Arma 3: Run`: to start the game from your local computer
-* `Arma 3: Run`: (With Logging)" to start the game and display the logfile
+* `Arma 3: Run (With Logging)`: to start the game and display the logfile
 * `Arma 3: Install Client`: to install the client addon into your local game directory
 
 ## Configuration
@@ -49,7 +51,7 @@ The configuratioin file is located in `.vscode/arma-dev.json` and contains the f
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+Very first release of Arma Dev
 
 ### 0.0.1
 

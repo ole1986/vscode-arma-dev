@@ -39,6 +39,12 @@ export async function run() {
             config.serverDirs = ["src/server_core", "src/server_config"];
             config.clientDirs = ["src/client"];
             config.version = 1;
+
+            let vscodeDir = path.dirname(configPath);
+
+            if(!fs.existsSync(vscodeDir)) {
+                fs.mkdirSync(vscodeDir);
+            }
             fs.writeFile(configPath, JSON.stringify(config, null, "\t"));
         }
 
@@ -63,4 +69,8 @@ export function updateConfig(content : string) {
     config.clientDirs.forEach((p, i) => {
         config.clientDirs[i] = p.replace(/\//g, "\\");
     });
+
+    if(config.privateKey) {
+        config.privateKey = path.normalize(config.privateKey);
+    }
 }

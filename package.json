@@ -32,8 +32,28 @@
             {
                 "command": "armadev.runClient",
                 "title": "Arma3: Run Client"
+            },
+            {
+                "command": "armadev.binarizeFile",
+                "title": "Arma3: Binarize File"
+            },
+            {
+                "command": "armadev.unbinarizeFile",
+                "title": "Arma3: UnBinarize File"
             }
         ],
+        "menus": {
+            "explorer/context": [
+                { 
+                    "command": "armadev.binarizeFile",
+                    "group": "armadev"
+                },
+                {
+                    "command": "armadev.unbinarizeFile",
+                    "group": "armadev"
+                }
+            ]
+        },
         "configuration": {
             "type": "object",
             "title": "Arma Dev Configuration",
