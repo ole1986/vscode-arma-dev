@@ -29,7 +29,7 @@ export async function getSteamPath(): Promise<string> {
                 resolve(steamPath);
             } else {
                 steamPath = undefined;
-                reject();
+                reject("No steam installation found");
             }
         };
 

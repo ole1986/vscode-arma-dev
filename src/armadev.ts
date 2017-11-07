@@ -57,6 +57,11 @@ export class ArmaDev {
         }
     }
 
+    public saveConfig(){
+        let data = JSON.stringify(this.config, null, "\t");
+        fs.writeFile(this.configPath, data);
+    }
+
     private loadConfig(content: string) {
         this.config = JSON.parse(content);
 

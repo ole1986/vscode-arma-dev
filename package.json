@@ -40,6 +40,10 @@
             {
                 "command": "armadev.unbinarizeFile",
                 "title": "Arma3: UnBinarize File"
+            },
+            {
+                "command": "armadev.generateKey",
+                "title": "Arma 3: Generate PrivateKey"
             }
         ],
         "menus": {

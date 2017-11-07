@@ -11,18 +11,12 @@ import * as logger from '../logger'
 const Arma3Tools = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3 Tools';
 
 let steamPath : string;
-let config : ArmaConfig;
 
 export async function packFolder(withPrefix: boolean): Promise<string> {
     steamPath = await getSteamPath();
-    config = ArmaDev.Self.Config;
+    let config = ArmaDev.Self.Config;
 
     return new Promise<string>((resolve, reject) => {
-        if(!steamPath) {
-            reject('No Steam found');
-            return;
-        }
-
         if(config === undefined) {
             reject('No configuration found');
             return;
@@ -48,6 +42,7 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
 
 export async function binarizeConfig(filePath: string) : Promise<boolean> {
     steamPath = await getSteamPath();
+    let config = ArmaDev.Self.Config;
 
     let cfgconvertPath = steamPath + Arma3Tools + path.sep + "CfgConvert" + path.sep + "CfgConvert.exe";
 
@@ -55,11 +50,6 @@ export async function binarizeConfig(filePath: string) : Promise<boolean> {
     let destPath = path.dirname(filePath) + path.sep + path.basename(filePath, extName ) + ".bin";
 
     return new Promise<boolean>((resolve, reject) => {
-        if (!steamPath) {
-            reject('No Steam found');
-            return;
-        }
-
         if(extName !== '.cpp') {
             reject("Only cpp files supported");
             return;
@@ -91,14 +81,20 @@ export async function unbinarizeConfig(filePath: string) : Promise<boolean> {
     });
 }
 
-export async function DSCreateKey() : Promise<boolean> {
-    var dsCreatePath = Arma3Tools + path.sep + "DSSign" + path.sep + "DSCreateKey.exe";
+export async function generateKey() : Promise<boolean> {
+    //steamPath = await getSteamPath();
+    let config = ArmaDev.Self.Config;
+
     return new Promise<boolean>((resolve, reject) => {
-        exec(dsCreatePath + "\""+ config.name +"\"").on('error', reject).on('exit', (code) => { if(code == 0) resolve(true); } );
+        let dsCreatePath = steamPath + Arma3Tools + path.sep + "DSSign" + path.sep + "DSCreateKey.exe";
+        exec(dsCreatePath + "\""+ config.name +"\"").on('error', reject).on('exit', (code) => { 
+            resolve(code === 0);
+        });
     });
 }
 
 async function packWithFileBank(folderDir: string, withPrefix: boolean) : Promise<boolean> {
+    let config = ArmaDev.Self.Config;
     let fileBankPath = steamPath + Arma3Tools + path.sep + "FileBank" + path.sep + "FileBank.exe";
 
     return new Promise<boolean>((resolve, reject) => {
@@ -132,6 +128,7 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean) : Promis
 }
 
 async function packWithAddonBuilder(folderDir: string, binarize: boolean, keyFile?: string ) : Promise<boolean> {
+    let config = ArmaDev.Self.Config;
     let addonBuilderPath = steamPath + Arma3Tools + path.sep + "AddonBuilder" + path.sep + "AddonBuilder.exe";
     let args : string[] = [];
     let buildPath: string = vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name + path.sep + "addons";
@@ -157,6 +154,7 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, keyFil
 }
 
 async function addModInfo(modDir: string) {
+    let config = ArmaDev.Self.Config;
     let destPath = modDir + path.sep + "mod.cpp";
     let data: string = "";
 
