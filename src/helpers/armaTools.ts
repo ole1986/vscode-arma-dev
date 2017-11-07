@@ -190,12 +190,12 @@ async function addModInfo(modDir: string) {
     let destPath = modDir + path.sep + 'mod.cpp';
     let data: string = '';
 
-    data += 'name = "' + config.title + ' [v' + config.version + ']"\n';
-    data += 'author = "' + config.author + '"\n';
+    data += 'name = "' + config.title + ' [v' + config.version + ']";\n';
+    data += 'author = "' + config.author + '";\n';
 
     if (config.website) {
-        data += 'actionName = "Website"\n';
-        data += 'action = "' + config.website + '"\n';
+        data += 'actionName = "Website";\n';
+        data += 'action = "' + config.website + '";\n';
     }
     fs.writeFile(destPath, data);
 }
