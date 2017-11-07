@@ -30,7 +30,7 @@ Below you can find all available commands
 
 ## Configuration
 
-The configuratioin file is located in `.vscode/arma-dev.json` and contains the following options.
+The configuration file is located in `.vscode/arma-dev.json` and contains the following options.
 
 * `title`: The title of your project (no used yet)
 * `name`: The short name of the addon (this name is used as output folder)
