@@ -2,6 +2,7 @@
     "name": "arma-dev",
     "displayName": "Arma Dev",
     "description": "Arma 3 Developer automation tools",
+    "icon": "images/arma-dev-logo.png",
     "version": "0.0.1",
     "publisher": "ole1986",
     "engines": {
