@@ -13,9 +13,9 @@ This Visual Studio Code extensions will optimize your workflow on building and s
 
 ## Usage
 
-Before using the Arma Dev please make sure you have properly installed the Arma 3 Tools.
-Open your existing Arma (server / client) and run the `Arma 3: Configure` command the setup the project.
+Before using the Arma Dev extension, please make sure you have properly installed the Arma 3 Tools from Steam.
 
+Open your existing Arma (server / client) and run the `Arma 3: Configure` command the setup the project.
 Please refer to the **Configuration** section for further details
 
 Below you can find all available commands
@@ -26,7 +26,7 @@ Below you can find all available commands
 * `Arma 3: UnBinarize`: Unbinarize bin files from explorer context menu
 * `Arma 3: Run`: to start the game from your local computer
 * `Arma 3: Run (With Logging)`: to start the game and display the logfile
-* `Arma 3: Install Client`: to install the client addon into your local game directory
+* `Arma 3: Generate Key`: generate a private key to sign the client pbo's
 
 ## Configuration
 
@@ -50,6 +50,12 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 ## Extension Settings
 
 * `arma-dev.logLevel`: setup the log level (Info | Debug | Error)
+
+## TODO
+
+* include the mod as startup parameter when running Arma
+* implement installation command for client
+* implement installation command for server (remote file transfer) 
 
 ## Release Notes
 
