@@ -31,9 +31,17 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
             packWithFileBank(vscode.workspace.rootPath + path.sep + p, withPrefix).catch(reject);
         });
 
+        // make sure client folder exist
+        let clientPath = vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name;
+        if (!fs.existsSync(clientPath)) {
+            fs.mkdirSync(clientPath);
+        }
+
         config.clientDirs.forEach(p => {
             packWithAddonBuilder(vscode.workspace.rootPath + path.sep + p, false, config.privateKey);
         });
+
+        addModInfo(clientPath);
     });
 }
 
@@ -115,7 +123,7 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean) : Promis
     });
 }
 
-async function  packWithAddonBuilder(folderDir: string, binarize: boolean, keyFile?: string ) : Promise<boolean> {
+async function packWithAddonBuilder(folderDir: string, binarize: boolean, keyFile?: string ) : Promise<boolean> {
     let addonBuilderPath = steamPath + Arma3Tools + path.sep + "AddonBuilder" + path.sep + "AddonBuilder.exe";
     let args : string[] = [];
     let buildPath: string = vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name + path.sep + "addons";
@@ -138,4 +146,16 @@ async function  packWithAddonBuilder(folderDir: string, binarize: boolean, keyFi
         logger.logInfo("Packing " + folderDir + " using AddonBuilder");
         spawn(addonBuilderPath, args).on('error', reject);
     });
+}
+
+async function addModInfo(modDir: string) {
+    let destPath = modDir + path.sep + "mod.cpp";
+    let data: string = "";
+
+    data += 'name = "'+config.title+' (v'+config.version+')"\n';
+    if(config.website) {
+        data += 'actionName = "Website"\n';
+        data += 'action = "'+config.website+'"\n';
+    }
+    fs.writeFile(destPath, data);
 }

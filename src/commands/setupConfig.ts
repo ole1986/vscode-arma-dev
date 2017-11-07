@@ -34,11 +34,12 @@ export async function run() {
             let config = {} as ArmaConfig;
             config.title = "Your Arma 3 Extension Name";
             config.name = "ShortExtName";
+            config.website = 'http://yourwebsite.tld';
+            config.version = "0.0.1";
             config.buildPath = "build";
             config.privateKey = "";
             config.serverDirs = ["src/server_core", "src/server_config"];
             config.clientDirs = ["src/client"];
-            config.version = 1;
 
             let vscodeDir = path.dirname(configPath);
 
