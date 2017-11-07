@@ -29,7 +29,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 export async function run() {
     try {
-        
         if(!fs.existsSync(configPath)) {
             let config = {} as ArmaConfig;
             config.title = "Your Arma 3 Extension Name";
