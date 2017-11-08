@@ -66,6 +66,7 @@ Running Arma with mod and additional mods (coonfiguration using `clientMods` con
 ### 0.0.2
 
 * run arma with mods included (configurable / default: current project)
+* fixed AddonBuilder when building client pbo files (packonly mode with signing)
 
 ### 0.0.1
 
