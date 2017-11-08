@@ -9,7 +9,7 @@ import { ArmaDev } from '../armadev';
 import { ArmaConfig } from '../models';
 
 const Arma3Tools = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3 Tools';
-let workingDir: vscode.Uri = vscode.workspace.workspaceFolders[0].uri;
+let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
 let steamPath: string;
 
@@ -117,7 +117,7 @@ export async function generateKey(): Promise<boolean> {
         }
 
         let dsCreatePath = steamPath + Arma3Tools + path.sep + 'DSSignFile' + path.sep + 'DSCreateKey.exe';
-        spawn(dsCreatePath, [possiblePrivateKey], { cwd: workingDir.fsPath }).on('error', reject).on('exit', (code) => {
+        spawn(dsCreatePath, [possiblePrivateKey], { cwd: workingDir }).on('error', reject).on('exit', (code) => {
             resolve(code === 0);
         });
     });
@@ -152,7 +152,7 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise
         let prefixValue = fs.readFileSync(workingDir + path.sep + folderDir + path.sep + prefixFile, 'UTF-8');
 
         logger.logInfo('Packing ' + folderDir + ' using FileBank (prefix: ' + prefixValue + ')');
-        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', config.buildPath + path.sep + '@' + config.name + 'Server' + path.sep + 'addons', folderDir],  { cwd: workingDir.fsPath });
+        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', config.buildPath + path.sep + '@' + config.name + 'Server' + path.sep + 'addons', folderDir],  { cwd: workingDir });
     });
 }
 
@@ -181,7 +181,7 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: 
         }
 
         logger.logInfo('Packing ' + folderDir + ' using AddonBuilder');
-        spawn(addonBuilderPath, args, {cwd: workingDir.fsPath }).on('error', reject);
+        spawn(addonBuilderPath, args, {cwd: workingDir }).on('error', reject);
     });
 }
 
