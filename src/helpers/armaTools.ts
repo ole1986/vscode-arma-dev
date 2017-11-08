@@ -174,6 +174,7 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: 
 
         args.push(fullFolderPath, fullBuildPath);
         args.push('-clear');
+        args.push('-packonly');
 
         if (sign && privateKey && fs.existsSync(fullPrivateKeyPath)) {
             args.push('-sign=' + fullPrivateKeyPath);
