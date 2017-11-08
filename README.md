@@ -55,7 +55,6 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 ## TODO
 
-* include the mod as startup parameter when running Arma
 * implement installation command for client
 * implement installation command for server (remote file transfer) 
 
