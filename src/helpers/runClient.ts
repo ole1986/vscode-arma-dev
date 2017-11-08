@@ -20,7 +20,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
     if (steamPath === undefined) return;
 
     let config = ArmaDev.Self.Config;
-    let clientModPath = path.normalize(vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + "@" + config.name);
+    let clientModPath = path.normalize(vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + '@' + config.name);
 
     if (fsWatcher === undefined && withLogging) {
         logger.logDebug('Watching for arma3 log files');
@@ -33,7 +33,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
         logger.logInfo('Running Arma3 using its battleye exe');
 
         let additionalMods = '';
-        if(config.clientMods.length > 0) {
+        if (config.clientMods.length > 0) {
             additionalMods = ';' + config.clientMods.join(';');
         }
 
