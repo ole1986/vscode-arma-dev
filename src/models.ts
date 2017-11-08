@@ -9,3 +9,8 @@ export interface ArmaConfig {
     clientDirs: string[];
     privateKey: string;
 }
+
+export interface Command {
+    command: string;
+    title: string;
+}

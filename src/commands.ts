@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as logger from './logger';
+
+import { Command } from './models';
 import { ArmaDev } from './armadev';
 import * as armaTools from './helpers/armaTools';
 import { runClient } from './helpers/runClient';
@@ -11,23 +13,21 @@ export class ArmaDevCommands {
     private ctx: vscode.ExtensionContext;
     constructor(context: vscode.ExtensionContext) {
         this.ctx = context;
-        this.commandList = [
-            'armadev.setupConfig',
-            'armadev.packFolders',
-            'armadev.runClientAndLog',
-            'armadev.runClient',
-            'armadev.binarizeFile',
-            'armadev.unbinarizeFile',
-            'armadev.generateKey'
-        ];
-        this.registerCommands();
+
+        let extPackage = context.extensionPath + path.sep + "package.json";
+        fs.readFile(extPackage, null, (err, data: string) => {
+            let packageJson = JSON.parse(data);
+            let cmdList: Command[] = packageJson.contributes.commands;
+
+            cmdList.forEach((value) => {
+                this.registerCommand(value.command);
+            })
+        });
     }
 
-    private registerCommands() {
-        this.commandList.forEach((cmd => {
-            let disposable = vscode.commands.registerCommand(cmd, (args) => { this.runCommand(cmd, args); });
-            this.ctx.subscriptions.push(disposable);
-        }));
+    private registerCommand(cmd){
+        let disposable = vscode.commands.registerCommand(cmd, (args) => { this.runCommand(cmd, args); });
+        this.ctx.subscriptions.push(disposable);
     }
 
     private async runCommand(cmdName: string, args: any) {
