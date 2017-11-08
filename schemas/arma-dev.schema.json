@@ -1,0 +1,31 @@
+{
+    "title": "Arma Dev configuration schema",
+    "type": "object",
+    "required": ["name", "title", "serverDirs", "clientDirs"],
+    "properties": {
+        "name": {
+            "description": "A valid project short name WITH NO whitespaces"
+        },
+        "title": {
+            "description": "Title of the project being displayed on client"
+        },
+        "author": {
+            "description": "The author of this mod"
+        },
+        "version": {
+            "description": "Version number of the project being displayed on client"
+        },
+        "buildPath": {
+            "description": "Destination folder where all packed files are being stored"
+        },
+        "privateKey": {
+            "description": "The private key to use to sign the client pbo files"
+        },
+        "serverDirs": {
+            "description": "A list of all server folders a pbo file should be generated for"
+        },
+        "clientDirs": {
+            "description": "A list of all client folders (usually one) a pbo file should be generated and signed for"
+        }
+    }
+}

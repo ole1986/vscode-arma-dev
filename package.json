@@ -3,7 +3,7 @@
     "displayName": "Arma Dev",
     "description": "Arma 3 Developer automation tools",
     "icon": "images/arma-dev-logo.png",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "ole1986",
     "engines": {
         "vscode": "^1.17.0"
@@ -69,7 +69,10 @@
                     "description": "Log Level [Debug|Info|Error]"
                 }
             }
-        }
+        },
+        "jsonValidation": [
+            {"fileMatch": "arma-dev.json", "url": "./schemas/arma-dev.schema.json"}
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run lint && npm run compile",

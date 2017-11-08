@@ -14,18 +14,18 @@ export class ArmaDevCommands {
     constructor(context: vscode.ExtensionContext) {
         this.ctx = context;
 
-        let extPackage = context.extensionPath + path.sep + "package.json";
+        let extPackage = context.extensionPath + path.sep + 'package.json';
         fs.readFile(extPackage, null, (err, data: string) => {
             let packageJson = JSON.parse(data);
             let cmdList: Command[] = packageJson.contributes.commands;
 
             cmdList.forEach((value) => {
                 this.registerCommand(value.command);
-            })
+            });
         });
     }
 
-    private registerCommand(cmd){
+    private registerCommand(cmd) {
         let disposable = vscode.commands.registerCommand(cmd, (args) => { this.runCommand(cmd, args); });
         this.ctx.subscriptions.push(disposable);
     }
