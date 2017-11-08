@@ -1,7 +1,7 @@
 'use strict';
 import * as vscode from 'vscode';
-import { ArmaDev } from './armadev'
-import { ArmaDevCommands } from './commands'
+import { ArmaDev } from './armadev';
+import { ArmaDevCommands } from './commands';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed

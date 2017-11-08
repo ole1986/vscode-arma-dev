@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ArmaConfig } from './models'
-import * as logger from './logger'
+import { ArmaConfig } from './models';
+import * as logger from './logger';
 
 export class ArmaDev {
-    private config : ArmaConfig;
-    private configPath : string;
-    static Self : ArmaDev;
+    private config: ArmaConfig;
+    private configPath: string;
+    static Self: ArmaDev;
 
     constructor() {
-        this.configPath = vscode.workspace.rootPath + path.sep + ".vscode" + path.sep + "arma-dev.json";
+        this.configPath = vscode.workspace.rootPath + path.sep + '.vscode' + path.sep + 'arma-dev.json';
 
         let disposableSave = vscode.workspace.onDidSaveTextDocument((doc) => {
             if (doc.fileName !== this.configPath) return;
@@ -18,16 +18,15 @@ export class ArmaDev {
         });
 
         if (fs.existsSync(this.configPath)) {
-            this.loadConfig(fs.readFileSync(this.configPath, "UTF-8"));
+            this.loadConfig(fs.readFileSync(this.configPath, 'UTF-8'));
         }
-        
         ArmaDev.Self = this;
     }
 
     /**
      * return the current ArmaDev configuration settings
      */
-    get Config() : ArmaConfig {
+    get Config(): ArmaConfig {
         return this.config;
     }
 
@@ -38,25 +37,25 @@ export class ArmaDev {
         try {
             if (!fs.existsSync(this.configPath)) {
                 let config = {} as ArmaConfig;
-                config.title = "Your Arma 3 Extension Name";
-                config.name = "ShortExtName";
-                config.author = "yourName";
+                config.title = 'Your Arma 3 Extension Name';
+                config.name = 'ShortExtName';
+                config.author = 'yourName';
                 config.website = 'http://yourwebsite.tld';
-                config.version = "0.0.1";
-                config.buildPath = "build";
-                config.privateKey = "";
-                config.serverDirs = ["src/server_core", "src/server_config"];
-                config.clientDirs = ["src/client"];
+                config.version = '0.0.1';
+                config.buildPath = 'build';
+                config.privateKey = '';
+                config.serverDirs = ['src/server_core', 'src/server_config'];
+                config.clientDirs = ['src/client'];
 
                 let vscodeDir = path.dirname(this.configPath);
 
                 if (!fs.existsSync(vscodeDir)) {
                     fs.mkdirSync(vscodeDir);
                 }
-                fs.writeFile(this.configPath, JSON.stringify(config, null, "\t"));
+                fs.writeFile(this.configPath, JSON.stringify(config, null, '\t'));
             }
 
-            vscode.workspace.openTextDocument(this.configPath).then(doc => { vscode.window.showTextDocument(doc) });
+            vscode.workspace.openTextDocument(this.configPath).then(doc => { vscode.window.showTextDocument(doc); });
         }
         catch (error) {
             logger.logError(error);
@@ -65,24 +64,24 @@ export class ArmaDev {
     /**
      * save the changes to its configuration file
      */
-    public saveConfig(){
-        let data = JSON.stringify(this.config, null, "\t");
+    public saveConfig() {
+        let data = JSON.stringify(this.config, null, '\t');
         fs.writeFile(this.configPath, data);
     }
 
     /**
      * load or update new changes being made to the configuration into its variable
-     * @param content 
+     * @param content config file content
      */
     private loadConfig(content: string) {
         this.config = JSON.parse(content);
 
         this.config.serverDirs.forEach((p, i) => {
-            this.config.serverDirs[i] = p.replace(/\//g, "\\");
+            this.config.serverDirs[i] = p.replace(/\//g, '\\');
         });
 
         this.config.clientDirs.forEach((p, i) => {
-            this.config.clientDirs[i] = p.replace(/\//g, "\\");
+            this.config.clientDirs[i] = p.replace(/\//g, '\\');
         });
 
         if (this.config.privateKey) {
