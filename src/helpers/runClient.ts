@@ -11,8 +11,14 @@ const Arma3Folder = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'A
 const Arma3AppData = process.env.LOCALAPPDATA + path.sep + "Arma 3";
 let fsWatcher : fs.FSWatcher
 
+/**
+ * Run the Arma client from its local machine
+ * @param withLogging open the arma logfile in vscode
+ */
 export async function runClient(withLogging?: boolean): Promise<string> {
     let steamPath = await getSteamPath();
+    if(steamPath === undefined) return;
+
     let config = ArmaDev.Self.Config;
 
     if(fsWatcher === undefined && withLogging) {
@@ -29,7 +35,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
     });
 }
 
-export async function openClientLog(event: string ,fileName: string) : Promise<void> {
+async function openClientLog(event: string ,fileName: string) : Promise<void> {
     fsWatcher.close();
     vscode.workspace.openTextDocument( Arma3AppData + path.sep + fileName).then((doc) => vscode.window.showTextDocument(doc));
 }

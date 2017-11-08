@@ -6,6 +6,9 @@ import * as logger from '../logger'
 
 let steamPath: string;
 
+/**
+ * Get the steam path by requesting the installation path from registry using reg query
+ */
 export async function getSteamPath(): Promise<string> {
     if (steamPath !== undefined) {
         return Promise.resolve(steamPath);

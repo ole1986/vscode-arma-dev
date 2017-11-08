@@ -7,7 +7,6 @@ import * as logger from './logger'
 export class ArmaDev {
     private config : ArmaConfig;
     private configPath : string;
-
     static Self : ArmaDev;
 
     constructor() {
@@ -25,10 +24,16 @@ export class ArmaDev {
         ArmaDev.Self = this;
     }
 
+    /**
+     * return the current ArmaDev configuration settings
+     */
     get Config() : ArmaConfig {
         return this.config;
     }
 
+    /**
+     * open (or create on initial call) the configuration in textEditor
+     */
     public openConfig() {
         try {
             if (!fs.existsSync(this.configPath)) {
@@ -57,12 +62,18 @@ export class ArmaDev {
             logger.logError(error);
         }
     }
-
+    /**
+     * save the changes to its configuration file
+     */
     public saveConfig(){
         let data = JSON.stringify(this.config, null, "\t");
         fs.writeFile(this.configPath, data);
     }
 
+    /**
+     * load or update new changes being made to the configuration into its variable
+     * @param content 
+     */
     private loadConfig(content: string) {
         this.config = JSON.parse(content);
 
