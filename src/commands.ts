@@ -37,9 +37,17 @@ export class ArmaDevCommands {
         try {
             switch (cmdName) {
                 case 'armadev.binarizeFile':
+                    if(!args) {
+                        vscode.window.showInformationMessage("Please run this command from explorer context menu");
+                        return;
+                    }
                     await armaTools.binarizeConfig(args.fsPath);
                     break;
                 case 'armadev.unbinarizeFile':
+                    if (!args) {
+                        vscode.window.showInformationMessage("Please run this command from explorer context menu");
+                        return;
+                    }
                     await armaTools.unbinarizeConfig(args.fsPath);
                     break;
                 case 'armadev.packFolders':
