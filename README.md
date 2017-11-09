@@ -65,6 +65,11 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 First implementation of ftp file transfer the serverDir pbo onto a remote destination (only sftp is supported)
 
+### 0.0.4
+
+* hotfix `Arma 3: Configure` was broken at start
+* command title correction
+
 ### 0.0.3
 
 * implemented SFTP connection to transfer files to server

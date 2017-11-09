@@ -3,7 +3,7 @@
     "displayName": "Arma Dev",
     "description": "Arma 3 Developer automation tools",
     "icon": "images/arma-dev-logo.png",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "ole1986",
     "engines": {
         "vscode": "^1.17.0"
@@ -20,27 +20,27 @@
         "commands": [
             {
                 "command": "armadev.setupConfig",
-                "title": "Arma3: Configure"
+                "title": "Arma 3: Configure"
             },
             {
                 "command": "armadev.packFolders",
-                "title": "Arma3: Pack"
+                "title": "Arma 3: Pack"
             },
             {
                 "command": "armadev.runClientAndLog",
-                "title": "Arma3: Run Client (with logging)"
+                "title": "Arma 3: Run Client (with logging)"
             },
             {
                 "command": "armadev.runClient",
-                "title": "Arma3: Run Client"
+                "title": "Arma 3: Run Client"
             },
             {
                 "command": "armadev.binarizeFile",
-                "title": "Arma3: Binarize File"
+                "title": "Arma 3: Binarize File"
             },
             {
                 "command": "armadev.unbinarizeFile",
-                "title": "Arma3: UnBinarize File"
+                "title": "Arma 3: UnBinarize File"
             },
             {
                 "command": "armadev.generateKey",
