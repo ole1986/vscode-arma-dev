@@ -42,11 +42,12 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `clientDirs`: all client directories a pbo files should be created for (ussualy its one or none)
 * `clientMods`: additional client mods being loaded when running arma 3
 * `version`: a version number to track possible changes (not immplemented)
-* `ftpConnection`: setup the SFTP connection using host, username and password (optionally path)
+* `ftpConnection`: setup SFTP connection using host, username and password (optionally path)
+* `ftpConnectionFile`: setup SFTP connection by using a separate file
 
 ## Requirements
 
-* Arma 3 Tools (http://store.steampowered.com/app/233800/Arma_3_Tools/?l=german)
+* Arma 3 Tools (http://store.steampowered.com/app/233800/Arma_3_Tools/)
 * Visual Studio Code
 
 PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
@@ -62,11 +63,12 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 ## Release Notes
 
-Running Arma with mod and additional mods (coonfiguration using `clientMods` configuration)
+First implementation of ftp file transfer the serverDir pbo onto a remote destination (only sftp is supported)
 
 ### 0.0.3
 
 * implemented SFTP connection to transfer files to server
+* fixed binarize commands when executed from non-context
 
 ### 0.0.2
 
