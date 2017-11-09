@@ -3,7 +3,7 @@
 Building Arma 3 mod made easier using the Arma Dev tooling extension
 This Visual Studio Code extensions will optimize your workflow on building and singing pbo's, automate execution and installations.
 
-![Getting Started](images/arma-dev.gif)
+![Getting Started](https://raw.githubusercontent.com/ole1986/vscode-arma-dev/master/images/arma-dev.gif)
 
 ## Features
 

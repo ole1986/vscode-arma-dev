@@ -3,6 +3,10 @@
     "displayName": "Arma Dev",
     "description": "Arma 3 Developer automation tools",
     "icon": "images/arma-dev-logo.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ole1986/vscode-arma-dev"
+    },
     "version": "0.0.4",
     "publisher": "ole1986",
     "engines": {
