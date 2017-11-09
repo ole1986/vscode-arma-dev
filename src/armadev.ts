@@ -97,5 +97,13 @@ export class ArmaDev {
         if (this.config.privateKey) {
             this.config.privateKey = path.normalize(this.config.privateKey);
         }
+
+        if (this.config.ftpConnectionFile) {
+            let ftpConfigFile = vscode.workspace.rootPath + path.sep + '.vscode' + path.sep + path.normalize(this.config.ftpConnectionFile);
+            if (fs.existsSync(ftpConfigFile)) {
+                let ftpConfigStr = fs.readFileSync(ftpConfigFile, 'UTF-8');
+                this.config.ftpConnection = JSON.parse(ftpConfigStr);
+            }
+        }
     }
 }

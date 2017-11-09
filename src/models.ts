@@ -10,6 +10,7 @@ export interface ArmaConfig {
     clientMods: string[];
     privateKey: string;
     ftpConnection: FtpConnection;
+    ftpConnectionFile: string;
 }
 
 export interface Command {
