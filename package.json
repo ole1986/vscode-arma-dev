@@ -3,7 +3,7 @@
     "displayName": "Arma Dev",
     "description": "Arma 3 Developer automation tools",
     "icon": "images/arma-dev-logo.png",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "ole1986",
     "engines": {
         "vscode": "^1.17.0"
@@ -45,6 +45,10 @@
             {
                 "command": "armadev.generateKey",
                 "title": "Arma 3: Generate PrivateKey"
+            },
+            {
+                "command": "armadev.transferFiles",
+                "title": "Arma 3: Transfer Files"
             }
         ],
         "menus": {
@@ -71,7 +75,10 @@
             }
         },
         "jsonValidation": [
-            {"fileMatch": "arma-dev.json", "url": "./schemas/arma-dev.schema.json"}
+            {
+                "fileMatch": "arma-dev.json",
+                "url": "./schemas/arma-dev.schema.json"
+            }
         ]
     },
     "scripts": {
@@ -88,5 +95,8 @@
         "vscode": "^1.1.5",
         "@types/node": "^7.0.43",
         "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "sftpjs": "^1.3.4"
     }
 }

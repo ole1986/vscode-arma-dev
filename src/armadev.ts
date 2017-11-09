@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ArmaConfig } from './models';
+import { ArmaConfig, FtpConnection } from './models';
 import * as logger from './logger';
 
 export class ArmaDev {
@@ -30,6 +30,14 @@ export class ArmaDev {
         return this.config;
     }
 
+    get ModServerName(): string {
+        return '@' + this.config.name + 'Server';
+    }
+
+    get ModClientName(): string {
+        return '@' + this.config.name;
+    }
+
     /**
      * open (or create on initial call) the configuration in textEditor
      */
@@ -47,6 +55,7 @@ export class ArmaDev {
                 config.serverDirs = ['src/server_core', 'src/server_config'];
                 config.clientDirs = ['src/client'];
                 config.clientMods = [];
+                config.ftpConnection = {} as FtpConnection;
 
                 let vscodeDir = path.dirname(this.configPath);
 

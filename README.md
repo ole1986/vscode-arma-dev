@@ -27,6 +27,7 @@ Below you can find all available commands
 * `Arma 3: Run`: to start the game from your local computer
 * `Arma 3: Run (With Logging)`: to start the game and display the logfile
 * `Arma 3: Generate Key`: generate a private key to sign the client pbo's
+* `Arma 3: Transfer Files`: transfer server pbos to destination server using SFTP
 
 ## Configuration
 
@@ -41,6 +42,7 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `clientDirs`: all client directories a pbo files should be created for (ussualy its one or none)
 * `clientMods`: additional client mods being loaded when running arma 3
 * `version`: a version number to track possible changes (not immplemented)
+* `ftpConnection`: setup the SFTP connection using host, username and password (optionally path)
 
 ## Requirements
 
@@ -61,6 +63,10 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 ## Release Notes
 
 Running Arma with mod and additional mods (coonfiguration using `clientMods` configuration)
+
+### 0.0.3
+
+* implemented SFTP connection to transfer files to server
 
 ### 0.0.2
 

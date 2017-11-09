@@ -44,6 +44,6 @@ export async function runClient(withLogging?: boolean): Promise<string> {
 async function openClientLog(event: string , fileName: string): Promise<void> {
     fsWatcher.close();
     fsWatcher = undefined;
-    logger.logInfo("Opening Arma3 logfile: " + Arma3AppData + path.sep + fileName);
+    logger.logInfo('Opening Arma3 logfile: ' + Arma3AppData + path.sep + fileName);
     vscode.workspace.openTextDocument( Arma3AppData + path.sep + fileName).then((doc) => vscode.window.showTextDocument(doc));
 }

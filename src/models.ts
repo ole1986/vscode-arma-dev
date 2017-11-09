@@ -9,9 +9,18 @@ export interface ArmaConfig {
     clientDirs: string[];
     clientMods: string[];
     privateKey: string;
+    ftpConnection: FtpConnection;
 }
 
 export interface Command {
     command: string;
     title: string;
+}
+
+export interface FtpConnection {
+    host: string;
+    username: string;
+    password: string;
+    path: string;
+    isSecure: boolean;
 }

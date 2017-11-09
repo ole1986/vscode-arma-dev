@@ -26,6 +26,26 @@
         },
         "clientDirs": {
             "description": "A list of all client folders (usually one) a pbo file should be generated and signed for"
+        },
+        "ftpConnection": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "description": "The ftp server hostname or ip address"
+                },
+                "username": {
+                    "description": "The ftp user name"
+                },
+                "password": {
+                    "description": "The ftp password"
+                },
+                "path": {
+                    "description": "The destination folder (usually 'Arma 3')"
+                },
+                "isSecure": {
+                    "description": "Use sftp connection"
+                }
+            }
         }
     }
 }
