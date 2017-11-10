@@ -3,6 +3,8 @@
 Building Arma 3 mod made easier using the Arma Dev tooling extension
 This Visual Studio Code extensions will optimize your workflow on building and singing pbo's, automate execution and installations.
 
+![Getting Started](https://raw.githubusercontent.com/ole1986/vscode-arma-dev/master/images/arma-dev.gif)
+
 ## Features
 
 * Build your extension or add existing into the Arma-Dev configuration
@@ -42,7 +44,8 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `clientDirs`: all client directories a pbo files should be created for (ussualy its one or none)
 * `clientMods`: additional client mods being loaded when running arma 3
 * `version`: a version number to track possible changes (not immplemented)
-* `ftpConnection`: setup the SFTP connection using host, username and password (optionally path)
+* `ftpConnection`: setup SFTP connection using host, username and password (optionally path)
+* `ftpConnectionFile`: setup SFTP connection by using a separate file
 
 ## Requirements
 
@@ -63,6 +66,11 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 ## Release Notes
 
 First implementation of ftp file transfer the serverDir pbo onto a remote destination (only sftp is supported)
+
+### 0.0.4
+
+* hotfix `Arma 3: Configure` was broken at start
+* command title correction
 
 ### 0.0.3
 

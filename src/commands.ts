@@ -16,13 +16,12 @@ export class ArmaDevCommands {
         this.ctx = context;
 
         let extPackage = context.extensionPath + path.sep + 'package.json';
-        fs.readFile(extPackage, null, (err, data: string) => {
-            let packageJson = JSON.parse(data);
-            let cmdList: Command[] = packageJson.contributes.commands;
+        let data = fs.readFileSync(extPackage, 'UTF-8');
+        let packageJson = JSON.parse(data);
+        let cmdList: Command[] = packageJson.contributes.commands;
 
-            cmdList.forEach((value) => {
-                this.registerCommand(value.command);
-            });
+        cmdList.forEach((value) => {
+            this.registerCommand(value.command);
         });
     }
 
