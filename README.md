@@ -65,7 +65,11 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 ## Release Notes
 
-First implementation of ftp file transfer the serverDir pbo onto a remote destination (only sftp is supported)
+Implemented a DialogControl previewer when opening *.hpp files
+
+### 0.0.5
+
+* implemented a DialogControl previewer (only works on proper formated *.hpp files / tested with safeZone only)
 
 ### 0.0.4
 
