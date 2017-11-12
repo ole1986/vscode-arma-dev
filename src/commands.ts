@@ -3,13 +3,16 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as logger from './logger';
 
+import { TextDocumentContentProvider } from './providers/dialogProvider';
 import { Command } from './models';
 import { ArmaDev } from './armadev';
 import * as armaTools from './helpers/armaTools';
 import { runClient } from './helpers/runClient';
 import { transferFiles } from './helpers/ftpTransfer';
+import { DialogViewer } from './dialogViewer';
 
 export class ArmaDevCommands {
+    private schema = 'arma-dev';
     private commandList: string[];
     private ctx: vscode.ExtensionContext;
     constructor(context: vscode.ExtensionContext) {
@@ -23,6 +26,14 @@ export class ArmaDevCommands {
         cmdList.forEach((value) => {
             this.registerCommand(value.command);
         });
+
+        this.registerProvider();
+    }
+
+    private registerProvider() {
+        let provider = new TextDocumentContentProvider();
+        let registration = vscode.workspace.registerTextDocumentContentProvider(this.schema, provider);
+        this.ctx.subscriptions.push(registration);
     }
 
     private registerCommand(cmd) {
@@ -48,6 +59,14 @@ export class ArmaDevCommands {
                         return;
                     }
                     await armaTools.unbinarizeConfig(args.fsPath);
+                    break;
+                case 'armadev.previewControl':
+                    if (!args) {
+                        vscode.window.showInformationMessage('Please run this command from explorer context menu');
+                        return;
+                    }
+                    let fileName = path.basename(args.fsPath);
+                    vscode.commands.executeCommand('vscode.previewHtml', this.schema + '://authority/arma-dev?path=' + encodeURI(args.fsPath), vscode.ViewColumn.One, 'Dialog ' + fileName);
                     break;
                 case 'armadev.packFolders':
                     await armaTools.packFolder(true);

@@ -20,6 +20,7 @@ export class ArmaDev {
         if (fs.existsSync(this.configPath)) {
             this.loadConfig(fs.readFileSync(this.configPath, 'UTF-8'));
         }
+
         ArmaDev.Self = this;
     }
 

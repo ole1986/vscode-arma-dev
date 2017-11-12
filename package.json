@@ -53,6 +53,10 @@
             {
                 "command": "armadev.transferFiles",
                 "title": "Arma 3: Transfer Files"
+            },
+            {
+                "command": "armadev.previewControl",
+                "title": "Arma 3: Preview Dialog"
             }
         ],
         "menus": {
@@ -64,6 +68,13 @@
                 {
                     "command": "armadev.unbinarizeFile",
                     "group": "armadev"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "armadev.previewControl",
+                    "group": "navigation",
+                    "when": "resourceExtname == .hpp"
                 }
             ]
         },
