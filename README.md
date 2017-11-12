@@ -61,7 +61,7 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 ## TODO
 
 * implement installation command for client
-* implement installation command for server (remote file transfer) 
+* extend remote file transfer to allow unencrypted ftp 
 
 ## Release Notes
 
