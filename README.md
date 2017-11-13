@@ -1,7 +1,7 @@
 # Arma Dev
 
 Building Arma 3 mod made easier using the Arma Dev tooling extension
-This Visual Studio Code extensions will optimize your workflow on building and singing pbo's, automate execution and installations.
+This Visual Studio Code extensions will optimize your workflow on building and signing pbo's, preview dialog controls and automate execution and installation.
 
 ![Getting Started](https://raw.githubusercontent.com/ole1986/vscode-arma-dev/master/images/arma-dev.gif)
 ![DialogControl preview](https://raw.githubusercontent.com/ole1986/vscode-arma-dev/master/images/arma-dev-dialog.gif)
@@ -18,7 +18,7 @@ This Visual Studio Code extensions will optimize your workflow on building and s
 
 Before using the Arma Dev extension, please make sure you have properly installed the Arma 3 Tools from Steam.
 
-Open your existing Arma (server / client) and run the `Arma 3: Configure` command the setup the project.
+Open your existing Arma (server / client) and run the `Arma 3: Configure` command to setup the project.
 Please refer to the **Configuration** section for further details
 
 Below you can find all available commands
