@@ -23,7 +23,7 @@ export class DialogViewer {
     private ctrl: DialogControl;
 
     private ctrlList: DialogControl[] = [];
-    private ctx : vscode.ExtensionContext;
+    private ctx: vscode.ExtensionContext;
 
     constructor(context: vscode.ExtensionContext) {
         this.ctx = context;
