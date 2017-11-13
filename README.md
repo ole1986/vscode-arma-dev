@@ -4,6 +4,7 @@ Building Arma 3 mod made easier using the Arma Dev tooling extension
 This Visual Studio Code extensions will optimize your workflow on building and singing pbo's, automate execution and installations.
 
 ![Getting Started](https://raw.githubusercontent.com/ole1986/vscode-arma-dev/master/images/arma-dev.gif)
+![DialogControl preview](https://raw.githubusercontent.com/ole1986/vscode-arma-dev/master/images/arma-dev-dialog.gif)
 
 ## Features
 
@@ -65,7 +66,8 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 ## Release Notes
 
-Implemented a DialogControl previewer when opening *.hpp files
+Implemented a DialogControl previewer when opening *.hpp files.
+Please note this is a very very first preview, supporting safezoned cords only
 
 ### 0.0.5
 

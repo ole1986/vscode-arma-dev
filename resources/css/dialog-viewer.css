@@ -1,0 +1,32 @@
+.RscBase {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    border: 1px dashed rgb(164, 99, 99);
+    overflow: hidden;
+}
+.RscStructuredText {
+    border: 1px dashed gray;
+}
+
+.RscText {
+    border: 1px dashed gray;
+}
+
+.RscListBox {
+    background-color: rgb(49, 49, 49);
+    border: 1px solid gray;
+}
+
+.RscEdit {
+    background-color: rgb(49, 49, 49);
+    border: 1px solid gray;
+}
+
+.RscButton {
+    justify-content: center;
+    text-align: center;
+    background-color: rgb(49, 49, 49);
+    border: 1px solid gray;
+}

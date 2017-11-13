@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as logger from './logger';
 
 import { DialogControl } from './models';
+import { INSPECT_MAX_BYTES } from 'buffer';
 
 const T_DISPLAY = 0;
 const T_CLASS = 1;
@@ -12,6 +13,8 @@ const T_PROPERTY = 3;
 
 
 export class DialogViewer {
+    public static Self: DialogViewer;
+
     private token = T_DISPLAY;
     private content: string;
     private openBrackets: number = 0;
@@ -20,22 +23,39 @@ export class DialogViewer {
     private ctrl: DialogControl;
 
     private ctrlList: DialogControl[] = [];
+    private ctx : vscode.ExtensionContext;
 
-    constructor(filePath: string) {
-        this.content = fs.readFileSync(filePath, 'UTF-8');
-        this.parse();
+    constructor(context: vscode.ExtensionContext) {
+        this.ctx = context;
+        DialogViewer.Self = this;
     }
 
-    public Output(): string {
-        return `<div style='position: relative'>${this.outputControls()}</div>`;
-    }
-
-    private outputControls() {
+    public async OutputHtml(filePath: string): Promise<string> {
+        let cssFile = this.ctx.extensionPath + path.sep + 'resources' + path.sep + 'css' + path.sep + 'dialog-viewer.css';
         let result: string = '';
-        this.ctrlList.forEach((val) => {
-            result += `<div style="position: absolute; font-size: 12px; border: 1px dashed white; left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}</div>`;
+
+        return new Promise<string>((resolve, reject) => {
+            this.openFile(filePath);
+            this.ctrlList.forEach((val) => {
+                result += `<div class="RscBase ${val.type}" style="left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}<br />idc=${val.idc}</div>`;
+            });
+
+            resolve(`<html>
+                    <head>
+                    <link rel="stylesheet" href="${cssFile}">
+                    </head>
+                    <div style='position: relative'>${result}</div>
+                </html>`);
         });
-        return result;
+    }
+
+    private async openFile(filePath: string) {
+        this.token = T_DISPLAY;
+        this.content = fs.readFileSync(filePath, 'UTF-8');
+
+        this.display = this.ctrl = undefined;
+        this.ctrlList = [];
+        this.parse();
     }
 
     private parse() {

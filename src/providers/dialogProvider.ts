@@ -11,9 +11,8 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
         try {
             let path = this.getPathFromURI(uri);
             if (path === '') throw 'No path defined';
-
-            let parser = new DialogViewer(path);
-            return parser.Output();
+            
+            return DialogViewer.Self.OutputHtml(path);
         }
         catch (error) {
             return 'ERROR: ' + error;
