@@ -120,7 +120,7 @@ export class DialogViewer {
                 this.openBrackets++;
                 i += m + 1;
             } else if (this.token === T_PROPERTY || this.token === T_PROPERTY_D) {
-                if (this.token === T_PROPERTY_D && this.openBrackets == 1 && this.parseDescriptor(part, i)) {
+                if (this.token === T_PROPERTY_D && this.openBrackets === 1 && this.parseDescriptor(part, i)) {
                     i += this.content.substr(i).indexOf('{') + 1;
                     continue;
                 }
