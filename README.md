@@ -73,6 +73,7 @@ Please note this is a very very first preview, supporting safezoned cords only
 ### 0.0.6
 
 * truncate the dialog control x and y axis (but configurable / see Extension Settings)
+* goto to line when dialog control is clicked from the preview
 
 ### 0.0.5
 
