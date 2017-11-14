@@ -30,6 +30,7 @@ export class ArmaDevCommands {
 
         this.registerProvider();
         this.registerCommand('armadev.previewControlOption');
+        this.registerCommand('armadev.previewControlJump');
     }
 
     private registerProvider() {
@@ -74,6 +75,16 @@ export class ArmaDevCommands {
                 case 'armadev.previewControlOption':
                     this.dialogProvider.setMode(args.mode);
                     this.dialogProvider.Reload();
+                    break;
+                case 'armadev.previewControlJump':
+                    vscode.workspace.openTextDocument(this.dialogProvider.getPath() ).then((doc) => {
+                        let pos = doc.positionAt(args.offset);
+
+                        vscode.window.showTextDocument(doc).then((editor) => {
+                            editor.selection = new vscode.Selection(pos, pos);
+                            editor.revealRange(editor.selection);
+                        });
+                    });
                     break;
                 case 'armadev.packFolders':
                     await armaTools.packFolder(true);

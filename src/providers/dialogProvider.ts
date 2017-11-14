@@ -38,6 +38,10 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
         this.options.path = p;
     }
 
+    public getPath(): string {
+        return this.options.path;
+    }
+
     public Reload() {
         this._onDidChange.fire(this.url);
     }

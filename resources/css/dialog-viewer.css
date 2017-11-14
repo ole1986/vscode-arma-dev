@@ -15,6 +15,10 @@
     margin: 1em;
 }
 
+.dialog-preview a {
+    color: #c7c7c7;
+}
+
 .RscBase {
     position: absolute;
     display: flex;
@@ -23,6 +27,7 @@
     border: 1px dashed rgb(164, 99, 99);
     overflow: hidden;
 }
+
 .RscStructuredText {
     border: 1px dashed gray;
 }

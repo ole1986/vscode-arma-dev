@@ -38,7 +38,7 @@ export class DialogViewer {
         return new Promise<string>((resolve, reject) => {
             this.openFile(opt);
             this.ctrlList.forEach((val) => {
-                result += `<div class="RscBase ${val.type}" style="left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}<br />idc=${val.idc}</div>`;
+                result += `<a href="${encodeURI('command:armadev.previewControlJump?' + JSON.stringify({offset: val.offset}))}"><div class="RscBase ${val.type}" style="left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}<br />idc=${val.idc}</div></a>`;
             });
 
             resolve(`<html>
@@ -116,15 +116,13 @@ export class DialogViewer {
             let part = this.content.substr(i, m);
 
             if (this.token <= 1 && this.openBrackets <= 2) {
-                this.parseDescriptor(part);
+                this.parseDescriptor(part, i);
                 this.openBrackets++;
                 i += m + 1;
             } else if (this.token === T_PROPERTY || this.token === T_PROPERTY_D) {
-                if (this.token === T_PROPERTY_D) {
-                    if (this.parseDescriptor(part)) {
-                        i += this.content.substr(i).indexOf('{') + 1;
-                        continue;
-                    }
+                if (this.token === T_PROPERTY_D && this.openBrackets == 1 && this.parseDescriptor(part, i)) {
+                    i += this.content.substr(i).indexOf('{') + 1;
+                    continue;
                 }
                 let ok = this.parseProperty(part);
                 if (!ok) {
@@ -141,7 +139,7 @@ export class DialogViewer {
         }
     }
 
-    private parseDescriptor(content: string) {
+    private parseDescriptor(content: string, pos: number) {
         let m = content.match(/class\s+?(\w+):?\s?(\w+)/);
         if (!m) return false;
 
@@ -153,6 +151,8 @@ export class DialogViewer {
             return true;
         }
         this.ctrl = new DialogControl();
+
+        this.ctrl.offset = pos + m.index;
         this.ctrl.name = m[1];
         this.ctrl.type = m[2];
         this.token = T_PROPERTY;

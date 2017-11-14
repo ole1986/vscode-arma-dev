@@ -37,6 +37,8 @@ export class DialogControl {
     public idd: number;
     public idc: number;
 
+    public offset: number;
+
     public x: string;
     public y: string;
 
