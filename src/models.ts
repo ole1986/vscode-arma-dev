@@ -57,7 +57,7 @@ export class DialogControl {
         this.factorY = 1500;
     }
 
-    public parseNumbers(){
+    public parseNumbers() {
         this.posX = this.parseNumber(this.x, this.factorX);
         this.posY = this.parseNumber(this.y, this.factorY);
         this.width = this.parseNumber(this.w, this.factorX);
@@ -76,7 +76,7 @@ export class DialogControl {
         return this.posY;
     }
 
-    public setX(x: number){
+    public setX(x: number) {
         this.posX = x;
     }
 

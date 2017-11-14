@@ -53,15 +53,15 @@ export class DialogViewer {
         });
     }
 
-    private showOptions(opt: DialogOptions){
+    private showOptions(opt: DialogOptions) {
         return `
         <div class="dialog-options">
-            Axis: 
+            Axis:&nbsp;
             <a href="${encodeURI('command:armadev.previewControlOption?' + JSON.stringify({mode: 0}))}" target="_self">Truncated</a>
             <a href="${encodeURI('command:armadev.previewControlOption?' + JSON.stringify({mode: 1}))}" target="_self">Original</a>
             &nbsp; The default behavior can be configured with 'arma-dev.dialogAxisMode' - A restart of vscode is requred
         </div>
-        `
+        `;
     }
 
     private async openFile(opt: DialogOptions) {
@@ -75,13 +75,13 @@ export class DialogViewer {
         this.ctrlList.forEach((val) => {
             val.parseNumbers();
         });
-        
+
         if (opt.mode <= 0) {
             this.fixMargins();
         }
     }
 
-    private fixMargins(){
+    private fixMargins() {
         let minX = Math.min.apply(Math, this.ctrlList.map((value) => value.getX() ));
         let minY = Math.min.apply(Math, this.ctrlList.map((value) => value.getY() ));
 

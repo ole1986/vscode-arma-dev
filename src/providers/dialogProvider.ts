@@ -30,7 +30,7 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
         return this._onDidChange.event;
     }
 
-    public setMode(data: number){
+    public setMode(data: number) {
         this.options.mode = data;
     }
 
@@ -38,7 +38,7 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
         this.options.path = p;
     }
 
-    public Reload(){
+    public Reload() {
         this._onDidChange.fire(this.url);
     }
 }

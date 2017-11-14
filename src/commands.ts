@@ -29,7 +29,7 @@ export class ArmaDevCommands {
         });
 
         this.registerProvider();
-        this.registerCommand("armadev.previewControlOption");
+        this.registerCommand('armadev.previewControlOption');
     }
 
     private registerProvider() {
