@@ -18,6 +18,11 @@ export interface Command {
     title: string;
 }
 
+export interface DialogOptions {
+    path: string;
+    mode: number;
+}
+
 export interface FtpConnection {
     host: string;
     username: string;
@@ -41,9 +46,22 @@ export class DialogControl {
     private factorX: number;
     private factorY: number;
 
+    private posX: number;
+    private posY: number;
+    private width: number;
+    private height: number;
+
+
     constructor() {
         this.factorX = 2200;
         this.factorY = 1500;
+    }
+
+    public parseNumbers(){
+        this.posX = this.parseNumber(this.x, this.factorX);
+        this.posY = this.parseNumber(this.y, this.factorY);
+        this.width = this.parseNumber(this.w, this.factorX);
+        this.height = this.parseNumber(this.h, this.factorY);
     }
 
     public hasProperty(name: string) {
@@ -51,19 +69,27 @@ export class DialogControl {
     }
 
     public getX() {
-        return this.parseNumber(this.x, this.factorX);
+        return this.posX;
     }
 
     public getY() {
-        return this.parseNumber(this.y, this.factorY);
+        return this.posY;
+    }
+
+    public setX(x: number){
+        this.posX = x;
+    }
+
+    public setY(y: number) {
+        this.posY = y;
     }
 
     public getWidth() {
-        return this.parseNumber(this.w, this.factorX);
+        return this.width;
     }
 
     public getHeight() {
-        return this.parseNumber(this.h, this.factorY);
+        return this.height;
     }
 
     private parseNumber(value: string, factor: number = 1000): number {

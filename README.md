@@ -58,6 +58,7 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 ## Extension Settings
 
 * `arma-dev.logLevel`: setup the log level (Info | Debug | Error)
+* `arma-dev.dialogAxisMode`: How to display the dialog control axis (0 = truncated, 1 = original) **restart required**
 
 ## TODO
 
@@ -66,8 +67,12 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 ## Release Notes
 
-Implemented a DialogControl previewer when opening *.hpp files.
+Implemented a DialogControl preview when opening *.hpp files.
 Please note this is a very very first preview, supporting safezoned cords only
+
+### 0.0.6
+
+* truncate the dialog control x and y axis (but configurable / see Extension Settings)
 
 ### 0.0.5
 

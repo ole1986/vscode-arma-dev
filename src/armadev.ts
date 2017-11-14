@@ -7,6 +7,7 @@ import * as logger from './logger';
 export class ArmaDev {
     private config: ArmaConfig;
     private configPath: string;
+    static Schema: string = 'arma-dev';
     static Self: ArmaDev;
 
     constructor() {

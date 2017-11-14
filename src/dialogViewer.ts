@@ -3,8 +3,9 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as logger from './logger';
 
-import { DialogControl } from './models';
+import { DialogControl, DialogOptions } from './models';
 import { INSPECT_MAX_BYTES } from 'buffer';
+import { ArmaDev } from './armadev';
 
 const T_DISPLAY = 0;
 const T_CLASS = 1;
@@ -30,12 +31,12 @@ export class DialogViewer {
         DialogViewer.Self = this;
     }
 
-    public async OutputHtml(filePath: string): Promise<string> {
+    public async OutputHtml(opt: DialogOptions): Promise<string> {
         let cssFile = this.ctx.extensionPath + path.sep + 'resources' + path.sep + 'css' + path.sep + 'dialog-viewer.css';
         let result: string = '';
 
         return new Promise<string>((resolve, reject) => {
-            this.openFile(filePath);
+            this.openFile(opt);
             this.ctrlList.forEach((val) => {
                 result += `<div class="RscBase ${val.type}" style="left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}<br />idc=${val.idc}</div>`;
             });
@@ -44,18 +45,50 @@ export class DialogViewer {
                     <head>
                     <link rel="stylesheet" href="${cssFile}">
                     </head>
-                    <div style='position: relative'>${result}</div>
+                    <body>
+                        ${this.showOptions(opt)}
+                        <div class="dialog-preview">${result}</div>
+                    </body>
                 </html>`);
         });
     }
 
-    private async openFile(filePath: string) {
+    private showOptions(opt: DialogOptions){
+        return `
+        <div class="dialog-options">
+            Axis: 
+            <a href="${encodeURI('command:armadev.previewControlOption?' + JSON.stringify({mode: 0}))}" target="_self">Truncated</a>
+            <a href="${encodeURI('command:armadev.previewControlOption?' + JSON.stringify({mode: 1}))}" target="_self">Original</a>
+            &nbsp; The default behavior can be configured with 'arma-dev.dialogAxisMode' - A restart of vscode is requred
+        </div>
+        `
+    }
+
+    private async openFile(opt: DialogOptions) {
         this.token = T_DISPLAY;
-        this.content = fs.readFileSync(filePath, 'UTF-8');
+        this.content = fs.readFileSync(opt.path, 'UTF-8');
 
         this.display = this.ctrl = undefined;
         this.ctrlList = [];
         this.parse();
+
+        this.ctrlList.forEach((val) => {
+            val.parseNumbers();
+        });
+        
+        if (opt.mode <= 0) {
+            this.fixMargins();
+        }
+    }
+
+    private fixMargins(){
+        let minX = Math.min.apply(Math, this.ctrlList.map((value) => value.getX() ));
+        let minY = Math.min.apply(Math, this.ctrlList.map((value) => value.getY() ));
+
+        this.ctrlList.forEach((val) => {
+            val.setX(val.getX() - minX);
+            val.setY(val.getY() - minY);
+        });
     }
 
     private parse() {

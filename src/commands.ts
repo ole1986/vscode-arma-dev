@@ -12,9 +12,10 @@ import { transferFiles } from './helpers/ftpTransfer';
 import { DialogViewer } from './dialogViewer';
 
 export class ArmaDevCommands {
-    private schema = 'arma-dev';
     private commandList: string[];
     private ctx: vscode.ExtensionContext;
+    private dialogProvider: TextDocumentContentProvider;
+
     constructor(context: vscode.ExtensionContext) {
         this.ctx = context;
 
@@ -28,11 +29,12 @@ export class ArmaDevCommands {
         });
 
         this.registerProvider();
+        this.registerCommand("armadev.previewControlOption");
     }
 
     private registerProvider() {
-        let provider = new TextDocumentContentProvider();
-        let registration = vscode.workspace.registerTextDocumentContentProvider(this.schema, provider);
+        this.dialogProvider = new TextDocumentContentProvider();
+        let registration = vscode.workspace.registerTextDocumentContentProvider(ArmaDev.Schema, this.dialogProvider);
         this.ctx.subscriptions.push(registration);
     }
 
@@ -66,7 +68,12 @@ export class ArmaDevCommands {
                         return;
                     }
                     let fileName = path.basename(args.fsPath);
-                    vscode.commands.executeCommand('vscode.previewHtml', this.schema + '://authority/arma-dev?path=' + encodeURI(args.fsPath), vscode.ViewColumn.One, 'Dialog ' + fileName);
+                    this.dialogProvider.setPath(args.fsPath);
+                    vscode.commands.executeCommand('vscode.previewHtml', ArmaDev.Schema + '://authority/arma-dev', vscode.ViewColumn.One, 'Dialog ' + fileName);
+                    break;
+                case 'armadev.previewControlOption':
+                    this.dialogProvider.setMode(args.mode);
+                    this.dialogProvider.Reload();
                     break;
                 case 'armadev.packFolders':
                     await armaTools.packFolder(true);

@@ -4,26 +4,41 @@ import * as fs from 'fs';
 import * as logger from '../logger';
 
 import { DialogViewer } from '../dialogViewer';
+import { DialogOptions } from '../models';
 
 export class TextDocumentContentProvider implements vscode.TextDocumentContentProvider {
-    constructor() {}
+    private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
+    private url: vscode.Uri;
+    private options: DialogOptions = { path: '', mode: 0 };
+
+    constructor() {
+        this.setMode(<number>vscode.workspace.getConfiguration('arma-dev').get('dialogAxisMode'));
+    }
     public async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
+        this.url = uri;
+
         try {
-            let path = this.getPathFromURI(uri);
-            if (path === '') throw 'No path defined';
-            return DialogViewer.Self.OutputHtml(path);
+            if (this.options.path === '') throw 'No path defined';
+            return DialogViewer.Self.OutputHtml(this.options);
         }
         catch (error) {
             return 'ERROR: ' + error;
         }
     }
 
-    private getPathFromURI(uri: vscode.Uri): string {
-        if (uri.query.length > 0) {
-            let re = uri.query.match(/path=(.*)/i);
-            return (re) ? decodeURI(re[1]) : '';
-        } else {
-            return '';
-        }
+    get onDidChange(): vscode.Event<vscode.Uri> {
+        return this._onDidChange.event;
+    }
+
+    public setMode(data: number){
+        this.options.mode = data;
+    }
+
+    public setPath(p: string) {
+        this.options.path = p;
+    }
+
+    public Reload(){
+        this._onDidChange.fire(this.url);
     }
 }
