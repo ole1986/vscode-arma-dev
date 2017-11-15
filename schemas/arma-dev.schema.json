@@ -27,6 +27,10 @@
         "clientDirs": {
             "description": "A list of all client folders (usually one) a pbo file should be generated and signed for"
         },
+        "clientMods": {
+            "type":"array",
+            "description": "Additional mods to include when starting the arma3 client"
+        },
         "ftpConnectionFile": {
             "type":"string",
             "description": "Used to separate the fton connection (credentials) from its main configuration. PLEASE NOTE: This will overwrite the ftpConnection property"
