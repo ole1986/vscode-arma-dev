@@ -15,6 +15,7 @@ export class ArmaDevCommands {
     private commandList: string[];
     private ctx: vscode.ExtensionContext;
     private dialogProvider: TextDocumentContentProvider;
+    private terminal: vscode.Terminal = vscode.window.createTerminal();
 
     constructor(context: vscode.ExtensionContext) {
         this.ctx = context;
@@ -116,8 +117,20 @@ export class ArmaDevCommands {
                     ArmaDev.Self.openConfig();
                     break;
             }
+            // post process any registered command (if exist in configuration)
+            this.postProcessCall(cmdName);
         } catch (e) {
             logger.logError(e);
         }
+    }
+
+    private postProcessCall(cmdName) {
+        if (ArmaDev.Self.Config.postProcess === undefined) return;
+        let postProcess = ArmaDev.Self.Config.postProcess;
+        cmdName = cmdName.replace('armadev.', '');
+        if (postProcess[cmdName] === undefined) return;
+
+        this.terminal.show();
+        this.terminal.sendText(postProcess[cmdName]);
     }
 }

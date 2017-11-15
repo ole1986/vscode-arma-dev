@@ -9,8 +9,9 @@ This Visual Studio Code extensions will optimize your workflow on building and s
 ## Features
 
 * Build your extension or add existing into the Arma-Dev configuration
-* Generate private keys
 * Pack server and client pbo files (incl. signing) with a single command
+* Preview Dialog control files (*.hpp)
+* Generate private keys
 * Install the client mod into the correct game directory
 * Run and debug (using *.RPT file) on the fly
 
@@ -47,6 +48,20 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `version`: a version number to track possible changes (not immplemented)
 * `ftpConnection`: setup SFTP connection using host, username and password (optionally path)
 * `ftpConnectionFile`: setup SFTP connection by using a separate file
+* `postProcess`: run some additional scripts once a command has been successfully executed - see [Post Processing](#user-content-post-processing)
+
+## Post Processing
+
+The post processing option (defined in `.vscode/arma-dev.json`) can be helpful to run additional tasks once a command has been successfully executed.
+An example of running a script when for instance *all files are transfered to the remote* can look the following:
+
+```
+"postProcess": { 
+    "transferFiles": "./restart-server.ps1"
+}
+```
+
+Please note these commands are always executed locally
 
 ## Requirements
 
@@ -69,6 +84,10 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 Implemented a DialogControl preview when opening *.hpp files.
 Please note this is a very very first preview, supporting safezoned cords only
+
+### 0.0.7
+
+* implemented a "post processing" option to run additional scripts - see Post Processing for more details
 
 ### 0.0.6
 

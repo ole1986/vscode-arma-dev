@@ -50,6 +50,32 @@
                     "description": "Use sftp connection"
                 }
             }
+        },
+        "postProcess": {
+            "type": "object",
+            "description": "Used to run additional scripts, once a commend has been executed",
+            "properties": {
+                "packFolders": {
+                    "type": "string",
+                    "description": "Define a script to run after all folders have been packed"
+                },
+                "transferFiles": {
+                    "type": "string",
+                    "description": "Define a script to run after all files are transfered to the remote"
+                },
+                "runClient": {
+                    "type": "string",
+                    "description": "Define a script to run after arma is started"
+                },
+                "runClientAndLog": {
+                    "type": "string",
+                    "description": "Define a script to run after arma is started (with logfile opened)"
+                },
+                "generateKey": {
+                    "type": "string",
+                    "description": "Define a script to run after a bikey has been generated"
+                }
+            }
         }
     }
 }

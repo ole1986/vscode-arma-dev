@@ -11,6 +11,7 @@ export interface ArmaConfig {
     privateKey: string;
     ftpConnection: FtpConnection;
     ftpConnectionFile: string;
+    postProcess: PostProcess;
 }
 
 export interface Command {
@@ -29,6 +30,14 @@ export interface FtpConnection {
     password: string;
     path: string;
     isSecure: boolean;
+}
+
+export interface PostProcess {
+    packFolders: string;
+    generateKey: string;
+    transferFiles: string;
+    runClientAndLog: string;
+    runClient: string;
 }
 
 export class DialogControl {
