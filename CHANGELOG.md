@@ -3,6 +3,10 @@
 A new feature "Toggle Code Live" implemented to immediately apply code changes while Arma is running.
 Please read the section "Toggle Code Live" for further details
 
+### 0.0.9
+
+* Updated Readme only
+
 ### 0.0.8
 
 * new feature: "Toggle Code Live" to edit source while arma is running
