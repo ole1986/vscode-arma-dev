@@ -32,6 +32,7 @@ Below you can find all available commands
 * `Arma 3: Run (With Logging)`: to start the game and display the logfile
 * `Arma 3: Generate Key`: generate a private key to sign the client pbo's
 * `Arma 3: Transfer Files`: transfer server pbos to destination server using SFTP
+* `Arma 3: Toggle Code Live`: please read the below "Toggle Code Live" section for further details
 
 ## Configuration
 
@@ -48,7 +49,17 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `version`: a version number to track possible changes (not immplemented)
 * `ftpConnection`: setup SFTP connection using host, username and password (optionally path)
 * `ftpConnectionFile`: setup SFTP connection by using a separate file
-* `postProcess`: run some additional scripts once a command has been successfully executed - see [Post Processing](#user-content-post-processing)
+* `postProcess`: run some additional scripts once a command has been successfully executed - see "Post Processing"
+
+## Toggle Code Live
+
+Code live is taking advantage of using symbolic links refering to the source code instead of using a PBO file.
+This allows you to immediately apply changes in game.
+
+BE AWARE: Some code need to be reloaded differently, some are blocked from being reloaded (E.g. the use of `compileFinal`)
+
+Also, to enable the use of folders inside the addons directory it is requires to execute the game with `-filePatching` startup parameter.
+When running the command `Arma 3: Run (with logging)` the extension is taking care of this parameter.
 
 ## Post Processing
 
