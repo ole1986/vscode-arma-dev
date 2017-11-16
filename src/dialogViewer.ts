@@ -32,7 +32,7 @@ export class DialogViewer {
     }
 
     public async OutputHtml(opt: DialogOptions): Promise<string> {
-        let cssFile = this.ctx.extensionPath + path.sep + 'resources' + path.sep + 'css' + path.sep + 'dialog-viewer.css';
+        let cssFile = path.join(this.ctx.extensionPath, 'resources', 'css', 'dialog-viewer.css');
         let result: string = '';
 
         return new Promise<string>((resolve, reject) => {

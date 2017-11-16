@@ -75,10 +75,10 @@ function walkFiles(dir) {
 function preparePutFiles() {
     let config: ArmaConfig = ArmaDev.Self.Config;
     let putPromises = [];
-    let listFiles = walkFiles( workingDir + path.sep + config.buildPath + path.sep + ArmaDev.Self.ModServerName );
+    let listFiles = walkFiles( path.join(workingDir, config.buildPath, ArmaDev.Self.ModServerName) );
 
     listFiles.forEach((filePath) => {
-        let relativePath = filePath.replace(workingDir + path.sep + config.buildPath + path.sep, '').replace(/\\/g, '/');
+        let relativePath = filePath.replace( path.join(workingDir, config.buildPath), '').replace(/\\/g, '/');
 
         if (config.ftpConnection.path) {
             relativePath = config.ftpConnection.path + '/' + relativePath;

@@ -21,7 +21,7 @@ export class ArmaDevCommands {
     constructor(context: vscode.ExtensionContext) {
         this.ctx = context;
 
-        let extPackage = context.extensionPath + path.sep + 'package.json';
+        let extPackage = path.join(context.extensionPath, 'package.json');
         let data = fs.readFileSync(extPackage, 'UTF-8');
         let packageJson = JSON.parse(data);
         let cmdList: Command[] = packageJson.contributes.commands;

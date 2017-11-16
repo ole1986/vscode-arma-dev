@@ -8,9 +8,8 @@ import { getSteamPath } from './getSteamPath';
 import { ArmaDev } from '../armadev';
 import { ArmaConfig } from '../models';
 
-const Arma3Tools = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3 Tools';
+const Arma3Tools = path.join('steamapps', 'common', 'Arma 3 Tools');
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
-
 let steamPath: string;
 
 /**
@@ -23,14 +22,15 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
     steamPath = await getSteamPath();
     if (steamPath === undefined) return;
     let config = ArmaDev.Self.Config;
+
     return new Promise<string>((resolve, reject) => {
         if (config === undefined) {
             reject('No configuration found');
             return;
         }
 
-        if (!fs.existsSync(workingDir + path.sep + config.buildPath)) {
-            fs.mkdirSync(workingDir + path.sep + config.buildPath);
+        if (!fs.existsSync( path.join(workingDir, config.buildPath))) {
+            fs.mkdirSync( path.join(workingDir, config.buildPath));
         }
 
         config.serverDirs.forEach(p => {
@@ -38,7 +38,7 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
         });
 
         // make sure client folder exist
-        let clientPath = workingDir + path.sep + config.buildPath + path.sep + '@' + config.name;
+        let clientPath = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName);
         if (!fs.existsSync(clientPath)) {
             fs.mkdirSync(clientPath);
         }
@@ -61,10 +61,10 @@ export async function binarizeConfig(filePath: string): Promise<boolean> {
 
     let config = ArmaDev.Self.Config;
 
-    let cfgconvertPath = steamPath + Arma3Tools + path.sep + 'CfgConvert' + path.sep + 'CfgConvert.exe';
+    let cfgconvertPath = path.join(steamPath, Arma3Tools,'CfgConvert', 'CfgConvert.exe');
 
     let extName = path.extname(filePath);
-    let destPath = path.dirname(filePath) + path.sep + path.basename(filePath, extName ) + '.bin';
+    let destPath = path.join(path.dirname(filePath), path.basename(filePath, extName) + '.bin');
 
     return new Promise<boolean>((resolve, reject) => {
         if (extName !== '.cpp') {
@@ -83,9 +83,9 @@ export async function unbinarizeConfig(filePath: string): Promise<boolean> {
     steamPath = await getSteamPath();
     if (steamPath === undefined) return;
 
-    let cfgconvertPath = steamPath + Arma3Tools + path.sep + 'CfgConvert' + path.sep + 'CfgConvert.exe';
+    let cfgconvertPath = path.join(steamPath, Arma3Tools, 'CfgConvert', 'CfgConvert.exe');
     let extName = path.extname(filePath);
-    let destPath = path.dirname(filePath) + path.sep + path.basename(filePath, extName) + '.cpp';
+    let destPath = path.join(path.dirname(filePath), path.basename(filePath, extName) + '.cpp');
 
     return new Promise<boolean>((resolve, reject) => {
         if (extName !== '.bin') {
@@ -111,12 +111,12 @@ export async function generateKey(): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
         let possiblePrivateKey = config.name.toLowerCase();
 
-        if (fs.existsSync(workingDir + path.sep + possiblePrivateKey)) {
+        if (fs.existsSync( path.join(workingDir, possiblePrivateKey))) {
             vscode.window.showInformationMessage('PrivateKey already exist');
             return;
         }
 
-        let dsCreatePath = steamPath + Arma3Tools + path.sep + 'DSSignFile' + path.sep + 'DSCreateKey.exe';
+        let dsCreatePath = path.join(steamPath, Arma3Tools, 'DSSignFile', 'DSCreateKey.exe');
         spawn(dsCreatePath, [possiblePrivateKey], { cwd: workingDir }).on('error', reject).on('exit', (code) => {
             resolve(code === 0);
         });
@@ -125,7 +125,7 @@ export async function generateKey(): Promise<boolean> {
 
 async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise<boolean> {
     let config = ArmaDev.Self.Config;
-    let fileBankPath = steamPath + Arma3Tools + path.sep + 'FileBank' + path.sep + 'FileBank.exe';
+    let fileBankPath = path.join(steamPath, Arma3Tools, 'FileBank', 'FileBank.exe');
 
     return new Promise<boolean>((resolve, reject) => {
         let prefixFile;
@@ -137,7 +137,7 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise
 
         if (withPrefix) {
             ['$PBOPREFIX$', '$PREFIX$'].forEach(p => {
-                let found = fs.existsSync(workingDir + path.sep + folderDir + path.sep + p);
+                let found = fs.existsSync( path.join(workingDir, folderDir, p));
                 if (found) {
                     prefixFile = p;
                     return;
@@ -149,20 +149,20 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise
             }
         }
 
-        let prefixValue = fs.readFileSync(workingDir + path.sep + folderDir + path.sep + prefixFile, 'UTF-8');
+        let prefixValue = fs.readFileSync( path.join(workingDir, folderDir, prefixFile), 'UTF-8');
 
         logger.logInfo('Packing ' + folderDir + ' using FileBank (prefix: ' + prefixValue + ')');
-        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', config.buildPath + path.sep + '@' + config.name + 'Server' + path.sep + 'addons', folderDir],  { cwd: workingDir });
+        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', path.join(config.buildPath,  ArmaDev.Self.ModServerName, 'addons'), folderDir],  { cwd: workingDir });
     });
 }
 
 async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: boolean ): Promise<boolean> {
     let config = ArmaDev.Self.Config;
-    let addonBuilderPath = steamPath + Arma3Tools + path.sep + 'AddonBuilder' + path.sep + 'AddonBuilder.exe';
+    let addonBuilderPath = path.join(steamPath, Arma3Tools, 'AddonBuilder', 'AddonBuilder.exe');
     let privateKey = config.privateKey.toLowerCase();
-    let fullFolderPath: string = workingDir + path.sep + folderDir;
-    let fullBuildPath: string = workingDir + path.sep + config.buildPath + path.sep + '@' + config.name + path.sep + 'addons';
-    let fullPrivateKeyPath: string = workingDir + path.sep + privateKey;
+    let fullFolderPath: string = path.join(workingDir , folderDir);
+    let fullBuildPath: string = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons');
+    let fullPrivateKeyPath: string = path.join(workingDir, privateKey);
 
     return new Promise<boolean>((resolve, reject) => {
         if (!fs.existsSync(addonBuilderPath)) {
@@ -187,7 +187,7 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: 
 
 async function addModInfo(modDir: string) {
     let config = ArmaDev.Self.Config;
-    let destPath = modDir + path.sep + 'mod.cpp';
+    let destPath = path.join(modDir, 'mod.cpp');
     let data: string = '';
 
     data += 'name = "' + config.title + ' [v' + config.version + ']";\n';

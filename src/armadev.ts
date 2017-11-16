@@ -11,7 +11,7 @@ export class ArmaDev {
     static Self: ArmaDev;
 
     constructor() {
-        this.configPath = vscode.workspace.rootPath + path.sep + '.vscode' + path.sep + 'arma-dev.json';
+        this.configPath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, '.vscode', 'arma-dev.json');
 
         let disposableSave = vscode.workspace.onDidSaveTextDocument((doc) => {
             if (doc.fileName !== this.configPath) return;
@@ -101,7 +101,7 @@ export class ArmaDev {
         }
 
         if (this.config.ftpConnectionFile) {
-            let ftpConfigFile = vscode.workspace.rootPath + path.sep + '.vscode' + path.sep + path.normalize(this.config.ftpConnectionFile);
+            let ftpConfigFile = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, '.vscode', path.normalize(this.config.ftpConnectionFile));
             if (fs.existsSync(ftpConfigFile)) {
                 let ftpConfigStr = fs.readFileSync(ftpConfigFile, 'UTF-8');
                 this.config.ftpConnection = JSON.parse(ftpConfigStr);

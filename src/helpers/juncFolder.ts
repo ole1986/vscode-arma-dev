@@ -23,7 +23,7 @@ export async function juncBuildFolders(removePbo: boolean): Promise<void> {
 
             if (removePbo && fs.existsSync( pboFile)) fs.unlink(pboFile);
 
-            if (isJuncFolder(clientAddonsFolder + path.sep + pboName)) return;
+            if (isJuncFolder( path.join(clientAddonsFolder, pboName))) return;
             let p = spawnSync('cmd', ['/c', 'mklink', '/J', pboName, path.join(workingDir, value)], { cwd: clientAddonsFolder });
             if (p.error) success = false;
         });
@@ -34,7 +34,7 @@ export async function juncBuildFolders(removePbo: boolean): Promise<void> {
 
             if (removePbo && fs.existsSync(pboFile)) fs.unlink(pboFile);
 
-            if (isJuncFolder(serverAddonsFolder + path.sep + pboName)) return;
+            if (isJuncFolder(path.join(serverAddonsFolder, pboName))) return;
             let p = spawnSync('cmd', ['/c', 'mklink', '/J', pboName, path.join(workingDir, value)], { cwd: serverAddonsFolder });
             if (p.error) success = false;
         });

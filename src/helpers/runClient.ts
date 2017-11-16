@@ -7,8 +7,8 @@ import { ArmaDev } from '../armadev';
 import { ArmaConfig } from '../models';
 import * as logger from '../logger';
 
-const Arma3Folder = path.sep + 'steamapps' + path.sep + 'common' + path.sep + 'Arma 3';
-const Arma3AppData = process.env.LOCALAPPDATA + path.sep + 'Arma 3';
+const Arma3Folder = path.join('steamapps', 'common', 'Arma 3');
+const Arma3AppData = path.join(process.env.LOCALAPPDATA, 'Arma 3');
 let fsWatcher: fs.FSWatcher;
 
 /**
@@ -20,7 +20,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
     if (steamPath === undefined) return;
 
     let config = ArmaDev.Self.Config;
-    let clientModPath = path.normalize(vscode.workspace.rootPath + path.sep + config.buildPath + path.sep + '@' + config.name);
+    let clientModPath = path.normalize( path.join(vscode.workspace.rootPath, config.buildPath, ArmaDev.Self.ModClientName) );
 
     if (fsWatcher === undefined && withLogging) {
         logger.logDebug('Watching for arma3 log files');
@@ -28,7 +28,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
     }
 
     return new Promise<string>((resolve, reject) => {
-        let Arma3BattleyeExe = steamPath + Arma3Folder + path.sep + 'arma3battleye.exe';
+        let Arma3BattleyeExe = path.join(steamPath, Arma3Folder, 'arma3battleye.exe');
 
         logger.logInfo('Running Arma3 using its battleye exe');
 
@@ -56,6 +56,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
 async function openClientLog(event: string , fileName: string): Promise<void> {
     fsWatcher.close();
     fsWatcher = undefined;
-    logger.logInfo('Opening Arma3 logfile: ' + Arma3AppData + path.sep + fileName);
-    vscode.workspace.openTextDocument( Arma3AppData + path.sep + fileName).then((doc) => vscode.window.showTextDocument(doc));
+    let logfile = path.join(Arma3AppData, fileName);
+    logger.logInfo('Opening Arma3 logfile: ' + logfile);
+    vscode.workspace.openTextDocument(logfile).then((doc) => vscode.window.showTextDocument(doc));
 }
