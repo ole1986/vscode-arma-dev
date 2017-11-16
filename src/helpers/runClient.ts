@@ -48,7 +48,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
         if (config.codeLive) {
             args.push('-filePatching');
         }
-        
+
         spawn(Arma3BattleyeExe, args);
     });
 }
