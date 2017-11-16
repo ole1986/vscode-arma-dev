@@ -53,13 +53,25 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 
 ## Toggle Code Live
 
-Code live is taking advantage of using symbolic links refering to the source code instead of using a PBO file.
-This allows you to immediately apply changes in game.
+With "Code live" you can edit *.sqf files with while Arma is running.
+It uses symlinks (refering to its workspace source) and the `-filePatching` [startup parameter](https://community.bistudio.com/wiki/Arma_3_Startup_Parameters).
 
-BE AWARE: Some code need to be reloaded differently, some are blocked from being reloaded (E.g. the use of `compileFinal`)
+A proper configured $PBOPREFIX$ for every addon file is required
 
-Also, to enable the use of folders inside the addons directory it is required to execute the game with `-filePatching` [startup parameter](https://community.bistudio.com/wiki/Arma_3_Startup_Parameters).
-When running the command `Arma 3: Run` this extension is taking care of all parameters.
+So, how to use it
+
+* Run the command `Arma 3: Toggle Code Live` to create all necessary symlinks into "Arma 3\x" directory
+* use `Arma 3: Run` to open Arma with all necessary parameters (-filePatching)
+* Customize the files defined in your workspace source folder.
+* Open the in-game debug console and either use `execVM` or `preprocessFile*` to "reload" the changes.
+* If you use a preInit script (which DOES NOT use `compileFinal`) you can use `execVM` too
+
+Please be aware of the following
+
+* Server config.cfg requires `allowedFilePatching = 2;`
+* No server side signatur verification will work, so `verifySignatures = 0;` to bypass it
+* You can toggle `Code Live` by reexecuting the command
+* Some commands / settings (like `compileFinal` / config.cpp) cannot be overwritten (anti cheat)
 
 ## Post Processing
 

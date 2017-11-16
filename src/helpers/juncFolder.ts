@@ -4,75 +4,85 @@ import { spawn, exec, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as logger from '../logger';
 
+import { getSteamPath } from './getSteamPath';
+import { getPrefixFromFile } from './armaTools';
+
 import { ArmaDev } from '../armadev';
 import { ArmaConfig } from '../models';
 
+const Arma3Folder = path.join('steamapps', 'common', 'Arma 3');
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
-export async function juncBuildFolders(removePbo: boolean): Promise<void> {
+export async function createJuncFolders(removePbo: boolean): Promise<void> {
+    let steamPath = await getSteamPath();
+    if (steamPath === undefined) return;
+
+    let armaFullPath = path.join(steamPath, Arma3Folder);
     let config = ArmaDev.Self.Config;
-    let clientAddonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons');
-    let serverAddonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModServerName, 'addons');
 
     return new Promise<void>((resolve, reject) => {
         let success = true;
 
-        config.clientDirs.forEach((value) => {
-            let pboName = path.basename(value);
-            let pboFile = path.join(clientAddonsFolder, pboName + '.pbo');
+        try {
+            config.clientDirs.forEach((value) => {
+                let prefixPbo = getPrefixFromFile(value);
+                if (!prefixPbo) throw 'No prefix file found or defined for ' + value;
 
-            if (removePbo && fs.existsSync( pboFile)) fs.unlink(pboFile);
+                if (!prefixPbo.match(/x\\[\w_]+/)) {
+                    vscode.window.showWarningMessage('Arma 3: Code Live requires a strict prefix format. Example: x\\your_addonname');
+                    throw 'A proper PREFIX (x\\your_addonname) is required for ' + value;
+                }
 
-            if (isJuncFolder( path.join(clientAddonsFolder, pboName))) return;
-            let p = spawnSync('cmd', ['/c', 'mklink', '/J', pboName, path.join(workingDir, value)], { cwd: clientAddonsFolder });
-            if (p.error) success = false;
-        });
+                let devPath = path.join(armaFullPath, prefixPbo);
+                let devDir = path.dirname(devPath);
+                let devMemoryName = path.basename(devPath);
 
-        config.serverDirs.forEach((value) => {
-            let pboName = path.basename(value);
-            let pboFile = path.join(serverAddonsFolder, pboName + '.pbo');
+                logger.logDebug('Create developer environment: ' + devDir);
+                spawnSync('cmd', ['/c', 'mkdir', devDir]);
 
-            if (removePbo && fs.existsSync(pboFile)) fs.unlink(pboFile);
+                if (isJuncFolder( path.join(armaFullPath, prefixPbo))) return;
 
-            if (isJuncFolder(path.join(serverAddonsFolder, pboName))) return;
-            let p = spawnSync('cmd', ['/c', 'mklink', '/J', pboName, path.join(workingDir, value)], { cwd: serverAddonsFolder });
-            if (p.error) success = false;
-        });
-
-        if(success)
+                logger.logDebug('Create symlink refering to ' + value);
+                let p = spawnSync('cmd', ['/c', 'mklink', '/J', devMemoryName, path.join(workingDir, value)], { cwd: devDir });
+                if (p.error) throw 'Something went wrong while creating symlink for ' + value;
+                logger.logInfo( p.output.join(' ') );
+            });
             resolve();
-        else
-            reject('Error while creating junction folders');
+        } catch (e) {
+            reject(e);
+        }
     });
 }
 
-export async function unjuncBuildFolders(): Promise<void> {
+export async function clearJuncFolders(): Promise<void> {
+    let steamPath = await getSteamPath();
+    if (steamPath === undefined) return;
+
+    let armaFullPath = path.join(steamPath, Arma3Folder);
     let config = ArmaDev.Self.Config;
-    let addonFolders = [
-        path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons'), 
-        path.join(workingDir, config.buildPath, ArmaDev.Self.ModServerName, 'addons')
-    ];
 
     return new Promise<void>((resolve, reject) => {
-        let success = true;
+        try {
+            config.clientDirs.forEach((value) => {
+                let prefixPbo = getPrefixFromFile(value);
+                if (!prefixPbo) return;
 
-        addonFolders.forEach((folder) => {
-            let juncDirs = fs.readdirSync(folder).map(name => path.join(folder, name)).filter(isJuncFolder);
-            juncDirs.forEach((value) => {
-                let p = spawnSync('cmd', ['/c', 'rmdir', value]);
-                if (p.error) success = false;
+                let devPath = path.join(armaFullPath, prefixPbo);
+                if (!isJuncFolder(devPath)) return;
+
+                let p = spawnSync('cmd', ['/c', 'rmdir', devPath]);
+                if (p.error) throw 'Something went wrong removing symlink for ' + value;
+                logger.logInfo( 'Symlink removed for ' + value );
             });
-        });
-
-        if (success)
             resolve();
-        else
-            reject('Error while removing junction folders');
+        } catch (e) {
+            reject(e);
+        }
     });
 }
 
 function isJuncFolder(pathToCheck: string): boolean {
-    if(!fs.existsSync(pathToCheck)) return false;
+    if (!fs.existsSync(pathToCheck)) return false;
     let stat = fs.lstatSync(pathToCheck);
     return stat.isSymbolicLink();
 }
