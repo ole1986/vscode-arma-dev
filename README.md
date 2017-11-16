@@ -58,8 +58,8 @@ This allows you to immediately apply changes in game.
 
 BE AWARE: Some code need to be reloaded differently, some are blocked from being reloaded (E.g. the use of `compileFinal`)
 
-Also, to enable the use of folders inside the addons directory it is requires to execute the game with `-filePatching` startup parameter.
-When running the command `Arma 3: Run (with logging)` the extension is taking care of this parameter.
+Also, to enable the use of folders inside the addons directory it is required to execute the game with `-filePatching` [startup parameter](https://community.bistudio.com/wiki/Arma_3_Startup_Parameters).
+When running the command `Arma 3: Run` this extension is taking care of all parameters.
 
 ## Post Processing
 
@@ -88,13 +88,17 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 ## TODO
 
-* implement installation command for client
-* extend remote file transfer to allow unencrypted ftp 
+* implement installation command for client / server
+* allow remote file transfer of unencrypted connections
 
 ## Release Notes
 
-Implemented a DialogControl preview when opening *.hpp files.
-Please note this is a very very first preview, supporting safezoned cords only
+A new feature "Toggle Code Live" implemented to immediately apply code changes while Arma is running.
+Please read the section "Toggle Code Live" for further details
+
+### 0.0.8
+
+* new feature: "Toggle Code Live" to edit source while arma is running
 
 ### 0.0.7
 
