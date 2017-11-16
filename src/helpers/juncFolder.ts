@@ -9,34 +9,65 @@ import { ArmaConfig } from '../models';
 
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
-export async function juncClientFolders(): Promise<boolean> {
+export async function juncBuildFolders(removePbo: boolean): Promise<void> {
     let config = ArmaDev.Self.Config;
-    let addonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons');
+    let clientAddonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons');
+    let serverAddonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModServerName, 'addons');
 
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
+        let success = true;
+
         config.clientDirs.forEach((value) => {
             let pboName = path.basename(value);
-            let pboFile = path.join(addonsFolder, pboName + '.pbo');
+            let pboFile = path.join(clientAddonsFolder, pboName + '.pbo');
 
-            if (fs.existsSync( pboFile)) {
-                fs.unlink(pboFile);
-            }
+            if (removePbo && fs.existsSync( pboFile)) fs.unlink(pboFile);
 
-            if(isJuncFolder(addonsFolder + path.sep + pboName)) return;
-            spawn('cmd', ['/c', 'mklink', '/J', pboName, workingDir + path.sep + value], { cwd: addonsFolder });
+            if (isJuncFolder(clientAddonsFolder + path.sep + pboName)) return;
+            let p = spawnSync('cmd', ['/c', 'mklink', '/J', pboName, path.join(workingDir, value)], { cwd: clientAddonsFolder });
+            if (p.error) success = false;
         });
+
+        config.serverDirs.forEach((value) => {
+            let pboName = path.basename(value);
+            let pboFile = path.join(serverAddonsFolder, pboName + '.pbo');
+
+            if (removePbo && fs.existsSync(pboFile)) fs.unlink(pboFile);
+
+            if (isJuncFolder(serverAddonsFolder + path.sep + pboName)) return;
+            let p = spawnSync('cmd', ['/c', 'mklink', '/J', pboName, path.join(workingDir, value)], { cwd: serverAddonsFolder });
+            if (p.error) success = false;
+        });
+
+        if(success)
+            resolve();
+        else
+            reject('Error while creating junction folders');
     });
 }
 
-export async function unjuncClientFolders(): Promise<boolean> {
+export async function unjuncBuildFolders(): Promise<void> {
     let config = ArmaDev.Self.Config;
-    let addonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons');
+    let addonFolders = [
+        path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons'), 
+        path.join(workingDir, config.buildPath, ArmaDev.Self.ModServerName, 'addons')
+    ];
 
-    return new Promise<boolean>((resolve, reject) => {
-        let juncDirs = fs.readdirSync(addonsFolder).map(name => path.join(addonsFolder, name)).filter(isJuncFolder);
-        juncDirs.forEach((value) => {
-            spawn('cmd', ['/c', 'rmdir', value]);
+    return new Promise<void>((resolve, reject) => {
+        let success = true;
+
+        addonFolders.forEach((folder) => {
+            let juncDirs = fs.readdirSync(folder).map(name => path.join(folder, name)).filter(isJuncFolder);
+            juncDirs.forEach((value) => {
+                let p = spawnSync('cmd', ['/c', 'rmdir', value]);
+                if (p.error) success = false;
+            });
         });
+
+        if (success)
+            resolve();
+        else
+            reject('Error while removing junction folders');
     });
 }
 

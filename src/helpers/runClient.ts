@@ -37,7 +37,19 @@ export async function runClient(withLogging?: boolean): Promise<string> {
             additionalMods = ';' + config.clientMods.join(';');
         }
 
-        spawn(Arma3BattleyeExe, ['2', '1', '0', '-exe', 'arma3_x64.exe', '-mod=' + clientModPath + additionalMods, '-nosplash', '-world empty', '-skipIntro']);
+        let args = [
+            '2', '1', '0', '-exe', 'arma3_x64.exe', // arma3 call through battleye
+            '-mod=' + clientModPath + additionalMods,
+            '-nosplash',
+            '-world empty',
+            '-skipIntro'
+        ];
+
+        if (config.codeLive) {
+            args.push('-filePatching');
+        }
+        
+        spawn(Arma3BattleyeExe, args);
     });
 }
 

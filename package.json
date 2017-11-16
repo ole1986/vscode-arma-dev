@@ -60,7 +60,7 @@
             },
             {
                 "command": "armadev.codeLive",
-                "title": "Arma 3: Code Live"
+                "title": "Arma 3: Toggle Code Live"
             }
         ],
         "menus": {

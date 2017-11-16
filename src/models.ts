@@ -12,6 +12,7 @@ export interface ArmaConfig {
     ftpConnection: FtpConnection;
     ftpConnectionFile: string;
     postProcess: PostProcess;
+    codeLive: boolean;
 }
 
 export interface Command {

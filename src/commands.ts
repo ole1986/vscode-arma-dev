@@ -10,7 +10,7 @@ import * as armaTools from './helpers/armaTools';
 import { runClient } from './helpers/runClient';
 import { transferFiles } from './helpers/ftpTransfer';
 import { DialogViewer } from './dialogViewer';
-import { juncClientFolders, unjuncClientFolders } from './helpers/juncFolder';
+import { juncBuildFolders, unjuncBuildFolders } from './helpers/juncFolder';
 
 export class ArmaDevCommands {
     private commandList: string[];
@@ -89,7 +89,10 @@ export class ArmaDevCommands {
                     });
                     break;
                 case 'armadev.packFolders':
-                    await unjuncClientFolders();
+                    if (ArmaDev.Self.Config.codeLive) {
+                        vscode.window.showWarningMessage("Arma 3: Code Live is still enabled - Please disable it first");
+                        return;
+                    }
                     await armaTools.packFolder(true);
                     break;
                 case 'armadev.generateKey':
@@ -115,8 +118,14 @@ export class ArmaDevCommands {
                         vscode.window.showInformationMessage('All files transfered to ' + ArmaDev.Self.Config.ftpConnection.host);
                     }
                     break;
-                case 'armadev.clodeLive':
-                    await juncClientFolders();
+                case 'armadev.codeLive':
+                    if (ArmaDev.Self.Config.codeLive) {
+                        await unjuncBuildFolders();
+                    } else {
+                        await juncBuildFolders(false);
+                    }
+                    
+                    ArmaDev.Self.Config.codeLive = !ArmaDev.Self.Config.codeLive;
                     break;
                 case 'armadev.setupConfig':
                     ArmaDev.Self.openConfig();
