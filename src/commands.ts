@@ -117,8 +117,10 @@ export class ArmaDevCommands {
                 case 'armadev.codeLive':
                     if (ArmaDev.Self.Config.codeLive) {
                         await clearJuncFolders();
+                        vscode.window.showInformationMessage('Arma 3: Code Live is now disabled and the PBO file used');
                     } else {
                         await createJuncFolders(true);
+                        vscode.window.showInformationMessage('Arma 3: Code Live is now enabled - You can edit the source now while Arma is running');
                     }
                     ArmaDev.Self.Config.codeLive = !ArmaDev.Self.Config.codeLive;
                     ArmaDev.Self.saveConfig();
