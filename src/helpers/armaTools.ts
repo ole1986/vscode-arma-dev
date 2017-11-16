@@ -61,7 +61,7 @@ export async function binarizeConfig(filePath: string): Promise<boolean> {
 
     let config = ArmaDev.Self.Config;
 
-    let cfgconvertPath = path.join(steamPath, Arma3Tools,'CfgConvert', 'CfgConvert.exe');
+    let cfgconvertPath = path.join(steamPath, Arma3Tools, 'CfgConvert', 'CfgConvert.exe');
 
     let extName = path.extname(filePath);
     let destPath = path.join(path.dirname(filePath), path.basename(filePath, extName) + '.bin');
@@ -135,21 +135,11 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise
             return;
         }
 
-        if (withPrefix) {
-            ['$PBOPREFIX$', '$PREFIX$'].forEach(p => {
-                let found = fs.existsSync( path.join(workingDir, folderDir, p));
-                if (found) {
-                    prefixFile = p;
-                    return;
-                }
-            });
-            if (prefixFile === undefined) {
-                reject('No prefix file found in ' + folderDir);
-                return;
-            }
+        let prefixValue = getPrefixFromFile(folderDir);
+        if (withPrefix && prefixValue === '') {
+            reject('No $PBOPREFIX$ file found');
+            return;
         }
-
-        let prefixValue = fs.readFileSync( path.join(workingDir, folderDir, prefixFile), 'UTF-8');
 
         logger.logInfo('Packing ' + folderDir + ' using FileBank (prefix: ' + prefixValue + ')');
         spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', path.join(config.buildPath,  ArmaDev.Self.ModServerName, 'addons'), folderDir],  { cwd: workingDir });
@@ -170,11 +160,18 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: 
             return;
         }
 
+        let prefixValue = getPrefixFromFile(folderDir);
+        if (prefixValue === '') {
+            reject('No $PBOPREFIX$ file found');
+            return;
+        }
+
         let args = [];
 
         args.push(fullFolderPath, fullBuildPath);
         args.push('-clear');
         args.push('-packonly');
+        args.push('-prefix=' + prefixValue);
 
         if (sign && privateKey && fs.existsSync(fullPrivateKeyPath)) {
             args.push('-sign=' + fullPrivateKeyPath);
@@ -183,6 +180,16 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: 
         logger.logInfo('Packing ' + folderDir + ' using AddonBuilder');
         spawn(addonBuilderPath, args, {cwd: workingDir }).on('error', reject);
     });
+}
+
+export function getPrefixFromFile(folderDir: string): string {
+    let prefixFile = path.join(workingDir, folderDir, '$PBOPREFIX$');
+
+    if (!fs.existsSync(prefixFile)) {
+        return '';
+    }
+
+    return fs.readFileSync(prefixFile, 'UTF-8');
 }
 
 async function addModInfo(modDir: string) {
