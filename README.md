@@ -51,7 +51,7 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `ftpConnectionFile`: setup SFTP connection by using a separate file
 * `postProcess`: run some additional scripts once a command has been successfully executed - see "Post Processing"
 
-## Toggle Code Live
+## Toggle Code Live (client only)
 
 With "Code live" you can edit *.sqf files with while Arma is running.
 It uses symlinks (refering to its workspace source) and the `-filePatching` [startup parameter](https://community.bistudio.com/wiki/Arma_3_Startup_Parameters).
