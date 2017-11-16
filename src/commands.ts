@@ -10,6 +10,7 @@ import * as armaTools from './helpers/armaTools';
 import { runClient } from './helpers/runClient';
 import { transferFiles } from './helpers/ftpTransfer';
 import { DialogViewer } from './dialogViewer';
+import { juncClientFolders, unjuncClientFolders } from './helpers/juncFolder';
 
 export class ArmaDevCommands {
     private commandList: string[];
@@ -88,6 +89,7 @@ export class ArmaDevCommands {
                     });
                     break;
                 case 'armadev.packFolders':
+                    await unjuncClientFolders();
                     await armaTools.packFolder(true);
                     break;
                 case 'armadev.generateKey':
@@ -112,6 +114,9 @@ export class ArmaDevCommands {
                     if (ok) {
                         vscode.window.showInformationMessage('All files transfered to ' + ArmaDev.Self.Config.ftpConnection.host);
                     }
+                    break;
+                case 'armadev.clodeLive':
+                    await juncClientFolders();
                     break;
                 case 'armadev.setupConfig':
                     ArmaDev.Self.openConfig();

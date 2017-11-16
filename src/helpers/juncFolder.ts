@@ -9,34 +9,40 @@ import { ArmaConfig } from '../models';
 
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
-export async function juncFolder(relativePath: string, destinationFolder: string): Promise<boolean> {
-    let juncPath = workingDir + path.sep + relativePath;
+export async function juncClientFolders(): Promise<boolean> {
+    let config = ArmaDev.Self.Config;
+    let addonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons');
 
     return new Promise<boolean>((resolve, reject) => {
-        if (!fs.existsSync(destinationFolder)) {
-            reject('Destination folder not found');
-            return;
-        }
+        config.clientDirs.forEach((value) => {
+            let pboName = path.basename(value);
+            let pboFile = path.join(addonsFolder, pboName + '.pbo');
 
-        if (!isJuncFolder(juncPath)) {
-            spawnSync('rmdir', [juncPath]);
-            spawn('mklink', ['/J', path.basename(juncPath), ], { cwd: path.dirname(juncPath) });
-        }
+            if (fs.existsSync( pboFile)) {
+                fs.unlink(pboFile);
+            }
+
+            if(isJuncFolder(addonsFolder + path.sep + pboName)) return;
+            spawn('cmd', ['/c', 'mklink', '/J', pboName, workingDir + path.sep + value], { cwd: addonsFolder });
+        });
     });
 }
 
-export function isJuncFolder(pathToCheck: string): boolean {
-    let stat = fs.statSync(pathToCheck);
+export async function unjuncClientFolders(): Promise<boolean> {
+    let config = ArmaDev.Self.Config;
+    let addonsFolder = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName, 'addons');
+
+    return new Promise<boolean>((resolve, reject) => {
+        let juncDirs = fs.readdirSync(addonsFolder).map(name => path.join(addonsFolder, name)).filter(isJuncFolder);
+        juncDirs.forEach((value) => {
+            spawn('cmd', ['/c', 'rmdir', value]);
+        });
+    });
+}
+
+function isJuncFolder(pathToCheck: string): boolean {
+    if(!fs.existsSync(pathToCheck)) return false;
+    let stat = fs.lstatSync(pathToCheck);
     return stat.isSymbolicLink();
 }
 
-export async function unjuncFolder(relativePath: string): Promise<boolean> {
-    let juncPath = workingDir + path.sep + relativePath;
-
-    return new Promise<boolean>((resolve, reject) => {
-        let juncPath = workingDir + path.sep + relativePath;
-        if (fs.existsSync(juncPath) && isJuncFolder(juncPath)) {
-            spawn('rmdir', [juncPath]);
-        }
-    });
-}

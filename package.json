@@ -57,6 +57,10 @@
             {
                 "command": "armadev.previewControl",
                 "title": "Arma 3: Preview Dialog"
+            },
+            {
+                "command": "armadev.codeLive",
+                "title": "Arma 3: Code Live"
             }
         ],
         "menus": {
