@@ -7,10 +7,10 @@ import { TextDocumentContentProvider } from './providers/dialogProvider';
 import { Command } from './models';
 import { ArmaDev } from './armadev';
 import * as armaTools from './helpers/armaTools';
-import { runClient, runServer } from './helpers/runArma';
+import { runClient, runServer, prepareServer } from './helpers/runArma';
 import { transferFiles } from './helpers/ftpTransfer';
 import { DialogViewer } from './dialogViewer';
-import { clearJuncFolders, createJuncFolders } from './helpers/juncFolder';
+import { clearJuncFolders, createJuncFolders, IsJuncConfigured } from './helpers/juncFolder';
 
 export class ArmaDevCommands {
     private commandList: string[];
@@ -109,6 +109,7 @@ export class ArmaDevCommands {
                     await runClient(false);
                     break;
                 case 'armadev.runServer':
+                    await prepareServer(this.ctx);
                     await runServer();
                     break;
                 case 'armadev.transferFiles':
@@ -118,15 +119,19 @@ export class ArmaDevCommands {
                     }
                     break;
                 case 'armadev.codeLive':
-                    if (ArmaDev.Self.Config.codeLive) {
+                    let status = await IsJuncConfigured();
+
+                    if (status === 1) {
                         await clearJuncFolders();
-                        vscode.window.showInformationMessage('Arma 3: Code Live is now disabled and the PBO file used');
-                    } else {
+                        vscode.window.showInformationMessage('Arma 3: Code Live is now disabled and the PBO file is being used');
+                    } else if (status === 0) {
                         await createJuncFolders();
                         vscode.window.showInformationMessage('Arma 3: Code Live is now enabled - You can edit the source now while Arma is running');
+                    } else {
+                        vscode.window.showWarningMessage('Arma 3: Code Live failed - Check the logfile for further steps');
+                        logger.logError('Please try to remove the "x\\" folder from your Game directory completely and try again');
+                        logger.logError('Also make sure you hae properly configured the $PBOPREFIX$ files for your addons');
                     }
-                    ArmaDev.Self.Config.codeLive = !ArmaDev.Self.Config.codeLive;
-                    ArmaDev.Self.saveConfig();
                     break;
                 case 'armadev.setupConfig':
                     ArmaDev.Self.openConfig();

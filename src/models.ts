@@ -7,13 +7,13 @@ export interface ArmaConfig {
     buildPath: string;
     serverDirs: string[];
     serverMods: string[];
+    serverParams: string;
     clientDirs: string[];
     clientMods: string[];
     privateKey: string;
     ftpConnection: FtpConnection;
     ftpConnectionFile: string;
     postProcess: PostProcess;
-    codeLive: boolean;
 }
 
 export interface Command {

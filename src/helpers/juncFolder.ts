@@ -62,6 +62,40 @@ export async function createJuncFolders(): Promise<void> {
     });
 }
 
+export async function IsJuncConfigured(): Promise<number> {
+    let steamPath = await getSteamPath();
+    if (steamPath === undefined) return;
+
+    let armaFullPath = path.join(steamPath, Arma3Folder);
+    let config = ArmaDev.Self.Config;
+    let bothDirs = config.clientDirs.concat(config.serverDirs);
+
+    return new Promise<number>((resolve, reject) => {
+        let ok: number = 0;
+        let total: number = 0;
+
+        bothDirs.forEach((value) => {
+            let prefixPbo = getPrefixFromFile(value);
+            if (!prefixPbo) return;
+
+            total++;
+            let devPath = path.join(armaFullPath, prefixPbo);
+            if (isJuncFolder(devPath)) {
+                ok++;
+            } else {
+                ok--;
+            }
+        });
+
+        let checknum = ( ok < 0 ? ok * -1 : ok );
+        if (total === checknum) {
+            resolve( ok <= 0 ? 0 : 1 );
+        } else {
+            resolve( -1 );
+        }
+    });
+}
+
 /**
  * Removes the symlinks from th "Arma 3\x" directory
  */
