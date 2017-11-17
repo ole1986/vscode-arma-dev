@@ -1,12 +1,21 @@
 ## Release Notes
 
-A new feature "Toggle Code Live" implemented to immediately apply code changes while Arma is running.
-Please read the section "Toggle Code Live" for further details
+Use `Arma 3: Run Server` to start an arma3server instance locally.
+It is shipped with a default server configuration (server.cfg) and mission file (mission.sqm)
+
+* server.cfg located in %APPDATA%\Arma 3\ArmaDevServer\server.cfg
+* mission.sqp located in <GameDir>\mpmissions\ArmaDev.VR
+
+The server parameters are properly set by default, you only need to run it.
+Of course, the logfile will be opened, too
+
+All done to make `Arma 3: Code Live` work more smoothly
 
 ### 0.0.10
 
 * include symlinks for server related source when using "Code Live"
 * added `serverMods` setting and `Arma 3: Run Server` command
+* added resource files (`server.cfg` and `mission.sqm`) to configure a "default" server
 
 ### 0.0.9
 
