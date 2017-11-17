@@ -11,8 +11,6 @@ export function activate(context: vscode.ExtensionContext) {
     new ArmaDev();
     new ArmaDevCommands(context);
     new DialogViewer(context);
-    // make available the armaToos for other extensions
-    // Usage: vscode.extensions.getExtension('ole1986.arma-dev').exports
     return armaTools;
 }
 // this method is called when your extension is deactivated

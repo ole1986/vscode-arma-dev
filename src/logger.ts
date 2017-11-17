@@ -21,7 +21,6 @@ function getLogChannel() {
 export function logError(error: any) {
     getLogChannel().appendLine(`[${getTimeAndms()}][Error] ${error.toString()}`.replace(/(\r\n|\n|\r)/gm, ''));
     getLogChannel().show();
-    vscode.window.showErrorMessage('There was an error, please view details in the \'Arma Dev Log\' output window');
 }
 
 export function logInfo(message: string) {

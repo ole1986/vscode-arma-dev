@@ -16,23 +16,15 @@ export async function getSteamPath(): Promise<string> {
 
     return new Promise<string>((resolve, reject) => {
         let regCallback = function (error: any, stdout: any, stderr: any) {
-            if (error && error.code !== 0) {
-                error.stdout = stdout.toString();
-                error.stderr = stderr.toString();
-                reject(error);
-                return;
-            }
+            let m = stdout.toString().match(/SteamPath\s+REG_SZ\s+([^\r\n]+)\s*\r?\n/i);
 
-            let installPath: string;
-            installPath = stdout.toString().match(/SteamPath\s+REG_SZ\s+([^\r\n]+)\s*\r?\n/i)[1];
-
-            if (installPath) {
-                steamPath = installPath.replace(/\//g, '\\');
+            if (!m) {
+                vscode.window.showErrorMessage('No Steam installation found in registry');
+                reject('No steam installation found');
+            } else {
+                steamPath = m[1].replace(/\//g, '\\');
                 logger.logDebug('Steam installation found in ' + steamPath);
                 resolve(steamPath);
-            } else {
-                steamPath = undefined;
-                reject('No steam installation found');
             }
         };
 
