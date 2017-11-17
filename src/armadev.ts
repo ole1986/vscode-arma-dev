@@ -77,6 +77,10 @@ export class ArmaDev {
      * save the changes to its configuration file
      */
     public saveConfig() {
+        if (this.config.ftpConnectionFile && this.config.ftpConnectionFile !== '') {
+            // do not save the ftp info when a file is defined
+            delete this.config.ftpConnection;
+        }
         let data = JSON.stringify(this.config, null, '\t');
         fs.writeFile(this.configPath, data);
     }
