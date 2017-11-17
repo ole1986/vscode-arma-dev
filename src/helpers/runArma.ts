@@ -65,7 +65,7 @@ export async function runClient(withLogging?: boolean): Promise<void> {
     });
 }
 
-export async function prepareServer(ctx: vscode.ExtensionContext, forceOverwrite: boolean = false): Promise<void> {
+export async function prepareServer(ctx: vscode.ExtensionContext, forceOverwrite: boolean = true): Promise<void> {
     let steamPath = await getSteamPath();
     if (steamPath === undefined) return;
 
@@ -87,7 +87,7 @@ export async function prepareServer(ctx: vscode.ExtensionContext, forceOverwrite
         if (proc.error) {
             reject('Failed to create Arma3 profile directory' + Arma3ServerAppData);
             return;
-        }      
+        }
         // write the server.cfg into Arma3 Server profile
         fs.createReadStream(serverCfgRes).pipe(fs.createWriteStream(serverCfgDest));
 
@@ -113,7 +113,7 @@ export async function runServer(): Promise<void> {
     watchServerLog(Arma3ServerAppData);
 
     return new Promise<void>((resolve, reject) => {
-        let Arma3ServerExe = '"' + path.join(steamPath, Arma3Folder, 'arma3server.exe') + '"';
+        let Arma3ServerExe = '"' + path.join(steamPath, Arma3Folder, 'arma3server_x64.exe') + '"';
 
         logger.logInfo('Running Arma3Server locally');
 
@@ -122,10 +122,10 @@ export async function runServer(): Promise<void> {
             serverModStr += ';' + config.serverMods.join(';');
         }
 
-        let args = '-autoInit  "-profiles=' + Arma3ServerAppData + '" "-config=' + path.join(Arma3ServerAppData,'server.cfg') + '" -serverMod=' + serverModStr;
+        let args = '-autoInit  "-profiles=' + Arma3ServerAppData + '" "-config=' + path.join(Arma3ServerAppData, 'server.cfg') + '" -serverMod=' + serverModStr;
 
         if (config.serverParams) {
-            args += " " + config.serverParams;
+            args += ' ' + config.serverParams;
         }
 
         exec(Arma3ServerExe + ' ' + args).on('exit', (code, signal) => {

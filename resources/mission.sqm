@@ -99,6 +99,54 @@ class CustomAttributes
 		};
 		nAttributes=1;
 	};
+	class Category2
+	{
+		name="Scenario";
+		class Attribute0
+		{
+			property="respawn";
+			expression="true";
+			class Value
+			{
+				class data
+				{
+					class type
+					{
+						type[]=
+						{
+							"STRING"
+						};
+					};
+					value="SIDE";
+				};
+			};
+		};
+		nAttributes=1;
+	};
+	class Category3
+	{
+		name="Scenario";
+		class Attribute0
+		{
+			property="respawnDialog";
+			expression="true";
+			class Value
+			{
+				class data
+				{
+					class type
+					{
+						type[]=
+						{
+							"SCALAR"
+						};
+					};
+					value=0;
+				};
+			};
+		};
+		nAttributes=1;
+	};
 };
 class Mission
 {

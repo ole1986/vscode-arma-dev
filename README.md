@@ -78,6 +78,8 @@ Please be aware of the following
 * You can toggle `Code Live` to either use the source or PBO file (located in buildPath)
 * Some commands / settings (like `compileFinal` / config.cpp) cannot be overwritten (anti cheat)
 
+**HINT: Use `[] spawn { compile preProcessFile "x\youraddon\yourfile.sqf" };` instead of `execVM "x\youraddon\yourfile.sqf"` from console to update file modifications**
+
 ## Post Processing
 
 The post processing option (defined in `.vscode/arma-dev.json`) can be helpful to run additional tasks once a command has been successfully executed.
