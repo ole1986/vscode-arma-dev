@@ -39,6 +39,10 @@
                 "title": "Arma 3: Run Client"
             },
             {
+                "command": "armadev.runServer",
+                "title": "Arma 3: Run Server"
+            },
+            {
                 "command": "armadev.binarizeFile",
                 "title": "Arma 3: Binarize File"
             },

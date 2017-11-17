@@ -182,8 +182,8 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: 
     });
 }
 
-export function getPrefixFromFile(folderDir: string): string {
-    let prefixFile = path.join(workingDir, folderDir, '$PBOPREFIX$');
+export function getPrefixFromFile(relPath: string): string {
+    let prefixFile = path.join(workingDir, relPath, '$PBOPREFIX$');
 
     if (!fs.existsSync(prefixFile)) {
         return '';

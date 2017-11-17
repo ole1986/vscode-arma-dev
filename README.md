@@ -28,8 +28,9 @@ Below you can find all available commands
 * `Arma 3: Pack`: to pack pbos defined in your configuration file
 * `Arma 3: Binarize`: binarize cpp files from explorer context menu
 * `Arma 3: UnBinarize`: Unbinarize bin files from explorer context menu
-* `Arma 3: Run`: to start the game from your local computer
-* `Arma 3: Run (With Logging)`: to start the game and display the logfile
+* `Arma 3: Run Server`: start the arma3server with server mod path included
+* `Arma 3: Run Client`: to start the game from your local computer
+* `Arma 3: Run Client (With Logging)`: to start the game and display the logfile
 * `Arma 3: Generate Key`: generate a private key to sign the client pbo's
 * `Arma 3: Transfer Files`: transfer server pbos to destination server using SFTP
 * `Arma 3: Toggle Code Live`: please read the below "Toggle Code Live" section for further details
@@ -44,9 +45,10 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `buildPath`: destination folder of all pbo files being generated
 * `privateKey`: the private key path being used to sign the client addon
 * `serverDir`: all server directories a pbo files should be created for (E.g. core and core_config)
+* `serverMods`: additional server mods being loaded when running arma3server
 * `clientDirs`: all client directories a pbo files should be created for (ussualy its one or none)
 * `clientMods`: additional client mods being loaded when running arma 3
-* `version`: a version number to track possible changes (not immplemented)
+* `version`: a version number to track possible changes (not immplemented) 
 * `ftpConnection`: setup SFTP connection using host, username and password (optionally path)
 * `ftpConnectionFile`: setup SFTP connection by using a separate file
 * `postProcess`: run some additional scripts once a command has been successfully executed - see "Post Processing"

@@ -3,6 +3,11 @@
 A new feature "Toggle Code Live" implemented to immediately apply code changes while Arma is running.
 Please read the section "Toggle Code Live" for further details
 
+### 0.0.10
+
+* include symlinks for server related source when using "Code Live"
+* added `serverMods` setting and `Arma 3: Run Server` command
+
 ### 0.0.9
 
 * Updated Readme only

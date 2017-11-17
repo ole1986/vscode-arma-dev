@@ -6,6 +6,7 @@ export interface ArmaConfig {
     version: string;
     buildPath: string;
     serverDirs: string[];
+    serverMods: string[];
     clientDirs: string[];
     clientMods: string[];
     privateKey: string;
@@ -39,6 +40,11 @@ export interface PostProcess {
     transferFiles: string;
     runClientAndLog: string;
     runClient: string;
+}
+
+export interface SymLink {
+    linkName: string;
+    relPath: string;
 }
 
 export class DialogControl {

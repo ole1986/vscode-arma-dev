@@ -8,7 +8,7 @@ import { getSteamPath } from './getSteamPath';
 import { getPrefixFromFile } from './armaTools';
 
 import { ArmaDev } from '../armadev';
-import { ArmaConfig } from '../models';
+import { ArmaConfig, SymLink } from '../models';
 
 const Arma3Folder = path.join('steamapps', 'common', 'Arma 3');
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -20,11 +20,13 @@ export async function createJuncFolders(removePbo: boolean): Promise<void> {
     let armaFullPath = path.join(steamPath, Arma3Folder);
     let config = ArmaDev.Self.Config;
 
+    let bothDirs = config.clientDirs.concat(config.serverDirs);
+
     return new Promise<void>((resolve, reject) => {
         let success = true;
 
         try {
-            config.clientDirs.forEach((value) => {
+            bothDirs.forEach((value) => {
                 let prefixPbo = getPrefixFromFile(value);
                 if (!prefixPbo) throw 'No prefix file found or defined for ' + value;
 
@@ -60,10 +62,11 @@ export async function clearJuncFolders(): Promise<void> {
 
     let armaFullPath = path.join(steamPath, Arma3Folder);
     let config = ArmaDev.Self.Config;
+    let bothDirs = config.clientDirs.concat(config.serverDirs);
 
     return new Promise<void>((resolve, reject) => {
         try {
-            config.clientDirs.forEach((value) => {
+            bothDirs.forEach((value) => {
                 let prefixPbo = getPrefixFromFile(value);
                 if (!prefixPbo) return;
 
@@ -86,4 +89,3 @@ function isJuncFolder(pathToCheck: string): boolean {
     let stat = fs.lstatSync(pathToCheck);
     return stat.isSymbolicLink();
 }
-

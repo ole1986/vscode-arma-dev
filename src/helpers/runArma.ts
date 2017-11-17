@@ -6,6 +6,7 @@ import { getSteamPath } from './getSteamPath';
 import { ArmaDev } from '../armadev';
 import { ArmaConfig } from '../models';
 import * as logger from '../logger';
+import { resolve } from 'path';
 
 const Arma3Folder = path.join('steamapps', 'common', 'Arma 3');
 const Arma3AppData = path.join(process.env.LOCALAPPDATA, 'Arma 3');
@@ -15,7 +16,7 @@ let fsWatcher: fs.FSWatcher;
  * Run the Arma client from its local machine
  * @param withLogging open the arma logfile in vscode
  */
-export async function runClient(withLogging?: boolean): Promise<string> {
+export async function runClient(withLogging?: boolean): Promise<void> {
     let steamPath = await getSteamPath();
     if (steamPath === undefined) return;
 
@@ -27,7 +28,7 @@ export async function runClient(withLogging?: boolean): Promise<string> {
         fsWatcher = fs.watch(Arma3AppData, openClientLog);
     }
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         let Arma3BattleyeExe = path.join(steamPath, Arma3Folder, 'arma3battleye.exe');
 
         logger.logInfo('Running Arma3 using its battleye exe');
@@ -49,7 +50,41 @@ export async function runClient(withLogging?: boolean): Promise<string> {
             args.push('-filePatching');
         }
 
-        spawn(Arma3BattleyeExe, args);
+        spawn(Arma3BattleyeExe, args).on('exit', (code) => {
+            if (code !== 0) {
+                reject('Failed to run Arma client');
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+export async function runServer(): Promise<void> {
+    let steamPath = await getSteamPath();
+    if (steamPath === undefined) return;
+
+    let config = ArmaDev.Self.Config;
+    let serverModPath = path.normalize(path.join(vscode.workspace.rootPath, config.buildPath, ArmaDev.Self.ModServerName));
+
+    return new Promise<void>((resolve, reject) => {
+        let Arma3ServerExe = path.join(steamPath, Arma3Folder, 'arma3server.exe');
+
+        logger.logInfo('Running Arma3Server locally');
+
+        let args = [
+            '-world=empty',
+            '-mod=' + config.serverMods.join(';'),
+            '-serverMod=' + serverModPath
+        ];
+
+        spawn(Arma3ServerExe, args).on('exit', (code) => {
+            if (code !== 0) {
+                reject('Failed to run Arma3Server');
+            } else {
+                resolve();
+            }
+        });
     });
 }
 

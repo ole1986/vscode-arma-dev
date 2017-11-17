@@ -7,7 +7,7 @@ import { TextDocumentContentProvider } from './providers/dialogProvider';
 import { Command } from './models';
 import { ArmaDev } from './armadev';
 import * as armaTools from './helpers/armaTools';
-import { runClient } from './helpers/runClient';
+import { runClient, runServer } from './helpers/runArma';
 import { transferFiles } from './helpers/ftpTransfer';
 import { DialogViewer } from './dialogViewer';
 import { clearJuncFolders, createJuncFolders } from './helpers/juncFolder';
@@ -107,6 +107,9 @@ export class ArmaDevCommands {
                     break;
                 case 'armadev.runClient':
                     await runClient(false);
+                    break;
+                case 'armadev.runServer':
+                    await runServer();
                     break;
                 case 'armadev.transferFiles':
                     ok = await transferFiles();

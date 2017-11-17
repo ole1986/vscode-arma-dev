@@ -24,6 +24,9 @@
         "serverDirs": {
             "description": "A list of all server folders a pbo file should be generated for"
         },
+        "serverMods": {
+            "description": "Additional mods being loaded when running the server"
+        },
         "clientDirs": {
             "description": "A list of all client folders (usually one) a pbo file should be generated and signed for"
         },
