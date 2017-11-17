@@ -23,9 +23,9 @@ export async function runClient(withLogging?: boolean): Promise<void> {
     let config = ArmaDev.Self.Config;
     let clientModPath = path.normalize( path.join(vscode.workspace.rootPath, config.buildPath, ArmaDev.Self.ModClientName) );
 
-    if (fsWatcher === undefined && withLogging) {
-        logger.logDebug('Watching for arma3 log files');
-        fsWatcher = fs.watch(Arma3AppData, openClientLog);
+    if (withLogging) {
+        logger.logDebug('Watching for arma3 log file');
+        watchLogInFolder(Arma3AppData);
     }
 
     return new Promise<void>((resolve, reject) => {
@@ -88,10 +88,19 @@ export async function runServer(): Promise<void> {
     });
 }
 
-async function openClientLog(event: string , fileName: string): Promise<void> {
-    fsWatcher.close();
-    fsWatcher = undefined;
-    let logfile = path.join(Arma3AppData, fileName);
-    logger.logInfo('Opening Arma3 logfile: ' + logfile);
-    vscode.workspace.openTextDocument(logfile).then((doc) => vscode.window.showTextDocument(doc));
+/**
+ * Watch a directory for a newly added file we assume its the actual log file being created
+ * and display it in vscode
+ * @param fullPath the folder path to watch for new file(s)
+ */
+async function watchLogInFolder(fullPath: string): Promise<void> {
+    if (fsWatcher !== undefined) return;
+
+    fsWatcher = fs.watch(fullPath, (event, fileName) => {
+        let logfile = path.join(fullPath, fileName);
+        logger.logInfo('Opening Arma3 logfile: ' + logfile);
+        fsWatcher.close();
+        fsWatcher = undefined;
+        vscode.workspace.openTextDocument(logfile).then((doc) => vscode.window.showTextDocument(doc));
+    });
 }

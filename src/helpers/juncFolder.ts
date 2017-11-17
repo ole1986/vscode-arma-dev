@@ -13,7 +13,13 @@ import { ArmaConfig, SymLink } from '../models';
 const Arma3Folder = path.join('steamapps', 'common', 'Arma 3');
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
-export async function createJuncFolders(removePbo: boolean): Promise<void> {
+/**
+ * Build the dev folders for every source dir defined in the configuration by using symlinks (junctions)
+ * Restriction is to use a $PBOPREFIX$ starting with "x\"
+ * So, a valid prefix is "x\yourAddon" or "x\yourServerAddon" defined in $PBOPREFIX$ file
+ * A prefix "x\yourMod\yourAddon" is also valid but not yet tested
+ */
+export async function createJuncFolders(): Promise<void> {
     let steamPath = await getSteamPath();
     if (steamPath === undefined) return;
 
@@ -56,6 +62,9 @@ export async function createJuncFolders(removePbo: boolean): Promise<void> {
     });
 }
 
+/**
+ * Removes the symlinks from th "Arma 3\x" directory
+ */
 export async function clearJuncFolders(): Promise<void> {
     let steamPath = await getSteamPath();
     if (steamPath === undefined) return;
@@ -84,6 +93,10 @@ export async function clearJuncFolders(): Promise<void> {
     });
 }
 
+/**
+ * verifies if the directory path is a symbolic link (junction)
+ * @param pathToCheck the folder path to be checked
+ */
 function isJuncFolder(pathToCheck: string): boolean {
     if (!fs.existsSync(pathToCheck)) return false;
     let stat = fs.lstatSync(pathToCheck);

@@ -10,6 +10,9 @@ import { ArmaConfig } from '../models';
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
 let ftpClient = new SFTPClient({ debug: function (e) { logger.logDebug(e); } });
 
+/**
+ * Transfer files to a remote defined in configuration using 'sftpjs'
+ */
 export async function transferFiles(): Promise<boolean> {
     let config: ArmaConfig = ArmaDev.Self.Config;
 
@@ -36,11 +39,10 @@ export async function transferFiles(): Promise<boolean> {
         ftpClient.on('ready', () => {
             ftpMakeDirs(ftpClient, modAddonServerDir).then(() => {
                 let promises = preparePutFiles();
-
-                Promise.all(promises).then((p) => {
-                    resolve(true);
-                }).catch(reject);
-            });
+                return Promise.all(promises);
+            }).then((p) => {
+                resolve(true);
+            }).catch(reject);
         }).connect({
             host: config.ftpConnection.host,
             user: config.ftpConnection.username,
@@ -49,17 +51,29 @@ export async function transferFiles(): Promise<boolean> {
     });
 }
 
+/**
+ * recursive make folders on the remote using 'sftpjs'
+ * @param client sftpjs client object
+ * @param localDir local folder path being translated to remotely missing folders
+ */
 async function ftpMakeDirs(client, localDir: string): Promise<void> {
     let normPath = localDir.replace(/\\/g, '/');
 
     return new Promise<void>((resolve, reject) => {
         client.mkdir(normPath, true, (err) => {
-            if (err) reject(err);
-            resolve();
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
         });
     });
 }
 
+/**
+ * walk to all files and folders by returning the files recursively
+ * @param dir folder to start from
+ */
 function walkFiles(dir) {
     let results = [];
     let list = fs.readdirSync(dir);
@@ -72,6 +86,9 @@ function walkFiles(dir) {
     return results;
 }
 
+/**
+ * Prepare promises for file transferring using 'sftpjs'
+ */
 function preparePutFiles() {
     let config: ArmaConfig = ArmaDev.Self.Config;
     let putPromises = [];
