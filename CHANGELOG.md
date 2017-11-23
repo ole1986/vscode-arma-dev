@@ -11,6 +11,12 @@ Of course, the logfile will be opened, too
 
 All done to make `Arma 3: Code Live` work more smoothly
 
+
+### 0.0.11
+
+* use 64bit arma3server
+* always overwrite the `config.cfg` and `mission.sqm` when running with `Arma 3: Run Server`
+
 ### 0.0.10
 
 * include symlinks for server related source when using "Code Live"
