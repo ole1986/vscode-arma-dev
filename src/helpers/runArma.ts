@@ -27,6 +27,8 @@ export async function runClient(withLogging?: boolean): Promise<void> {
     let config = ArmaDev.Self.Config;
     let clientModPath = path.normalize( path.join(vscode.workspace.rootPath, config.buildPath, ArmaDev.Self.ModClientName) );
 
+    let status = await IsJuncConfigured();
+
     if (withLogging) {
         logger.logDebug('Watching for arma3 log file');
         watchClientLog(Arma3AppData);
@@ -35,32 +37,36 @@ export async function runClient(withLogging?: boolean): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         let Arma3BattleyeExe = path.join(steamPath, Arma3Folder, 'arma3battleye.exe');
 
-        logger.logInfo('Running Arma3 using its battleye exe');
+        let clientMods = [];
 
-        let additionalMods = '';
+        if (config.clientDirs !== undefined) {
+            clientMods.push(clientModPath);
+        }
+
         if (config.clientMods && config.clientMods.length > 0) {
-            additionalMods = ';' + config.clientMods.join(';');
+            clientMods = clientMods.concat(config.clientMods);
         }
 
         let args = [
             '2', '1', '0', '-exe', 'arma3_x64.exe', // arma3 call through battleye
-            '-mod=' + clientModPath + additionalMods,
+            '-mod=' + clientMods.join(';'),
             '-nosplash',
             '-world empty',
             '-skipIntro'
         ];
 
-        IsJuncConfigured().then(status => {
-            if (status === 1) {
-                args.push('-filePatching');
+        if (status === 1) {
+            args.push('-filePatching');
+        }
+
+        logger.logInfo('Running Arma 3: ' + Arma3BattleyeExe + ' ' + args.join(' '));
+
+        spawn(Arma3BattleyeExe, args).on('exit', (code) => {
+            if (code !== 0) {
+                reject('Failed to run Arma client');
+            } else {
+                resolve();
             }
-            spawn(Arma3BattleyeExe, args).on('exit', (code) => {
-                if (code !== 0) {
-                    reject('Failed to run Arma client');
-                } else {
-                    resolve();
-                }
-            });
         });
     });
 }

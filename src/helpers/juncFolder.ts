@@ -68,7 +68,15 @@ export async function IsJuncConfigured(): Promise<number> {
 
     let armaFullPath = path.join(steamPath, Arma3Folder);
     let config = ArmaDev.Self.Config;
-    let bothDirs = config.clientDirs.concat(config.serverDirs);
+
+    let bothDirs = [];
+
+    if (config.clientDirs !== undefined) {
+        bothDirs = bothDirs.concat(config.clientDirs);
+    }
+    if (config.serverDirs !== undefined) {
+        bothDirs = bothDirs.concat(config.serverDirs);
+    }
 
     return new Promise<number>((resolve, reject) => {
         let ok: number = 0;

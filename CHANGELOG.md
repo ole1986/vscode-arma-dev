@@ -15,6 +15,7 @@ All done to make `Arma 3: Code Live` work more smoothly
 
 * support for 32bit arma3server (configurable)
 * fixed fileWatcher to open the *.rpt log files only when running server / client
+* fixed Arma 3 client launch when noch clientDirs defined
 
 ## 0.0.11
 
