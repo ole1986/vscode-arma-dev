@@ -149,6 +149,7 @@ async function watchClientLog(fullPath: string): Promise<void> {
 
     fsWatcher = fs.watch(fullPath, (event, fileName) => {
         let logfile = path.join(fullPath, fileName);
+        if(path.extname(logfile) !== '.rpt') return;
         logger.logInfo('Opening Arma3 logfile: ' + logfile);
         fsWatcher.close();
         fsWatcher = undefined;
@@ -161,6 +162,7 @@ async function watchServerLog(fullPath: string): Promise<void> {
 
     fsWatcherSrv = fs.watch(fullPath, (event, fileName) => {
         let logfile = path.join(fullPath, fileName);
+        if(path.extname(logfile) !== '.rpt') return;
         logger.logInfo('Opening Arma3 logfile: ' + logfile);
         fsWatcherSrv.close();
         fsWatcherSrv = undefined;
