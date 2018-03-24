@@ -113,9 +113,8 @@ export async function runServer(): Promise<void> {
     watchServerLog(Arma3ServerAppData);
 
     return new Promise<void>((resolve, reject) => {
-        let Arma3ServerExe = '"' + path.join(steamPath, Arma3Folder, 'arma3server_x64.exe') + '"';
-
-        logger.logInfo('Running Arma3Server locally');
+        let armaExe = config.serverUse32bit ? 'arma3server.exe' : 'arma3server_x64.exe';
+        let Arma3ServerExe = '"' + path.join(steamPath, Arma3Folder, armaExe) + '"';
 
         let serverModStr = serverModPath;
         if (config.serverMods && config.serverMods.length > 0) {
@@ -127,6 +126,8 @@ export async function runServer(): Promise<void> {
         if (config.serverParams) {
             args += ' ' + config.serverParams;
         }
+
+        logger.logInfo('Running Arma3Server: ' + args);
 
         exec(Arma3ServerExe + ' ' + args).on('exit', (code, signal) => {
             if (code !== 0) {

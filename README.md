@@ -45,6 +45,7 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `buildPath`: destination folder of all pbo files being generated
 * `privateKey`: the private key path being used to sign the client addon
 * `serverDir`: all server directories a pbo files should be created for (E.g. core and core_config)
+* `serverUse32bit`: use legacy 32bit version of arma3server.exe
 * `serverMods`: additional server mods being loaded when running arma3server
 * `clientDirs`: all client directories a pbo files should be created for (ussualy its one or none)
 * `clientMods`: additional client mods being loaded when running arma 3
@@ -55,7 +56,7 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 
 ## Toggle Code Live
 
-**PLEASE READ THIS CAREFULLY**
+### PLEASE READ THIS CAREFULLY
 
 With "Code live" you can edit *.sqf files while Arma is running.
 It uses symlinks (refering to its workspace source) and the `-filePatching` [startup parameter](https://community.bistudio.com/wiki/Arma_3_Startup_Parameters).

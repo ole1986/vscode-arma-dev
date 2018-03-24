@@ -55,6 +55,7 @@ export class ArmaDev {
                 config.buildPath = 'build';
                 config.privateKey = '';
                 config.serverDirs = ['src/server_core', 'src/server_config'];
+                config.serverUse32bit = false;
                 config.clientDirs = ['src/client'];
                 config.clientMods = [];
                 config.ftpConnection = {} as FtpConnection;
@@ -92,13 +93,17 @@ export class ArmaDev {
     private loadConfig(content: string) {
         this.config = JSON.parse(content);
 
-        this.config.serverDirs.forEach((p, i) => {
-            this.config.serverDirs[i] = p.replace(/\//g, '\\');
-        });
+        if(this.config.serverDirs != undefined) {
+            this.config.serverDirs.forEach((p, i) => {
+                this.config.serverDirs[i] = p.replace(/\//g, '\\');
+            });
+        }
 
-        this.config.clientDirs.forEach((p, i) => {
-            this.config.clientDirs[i] = p.replace(/\//g, '\\');
-        });
+        if(this.config.clientDirs != undefined) {
+            this.config.clientDirs.forEach((p, i) => {
+                this.config.clientDirs[i] = p.replace(/\//g, '\\');
+            });
+        }
 
         if (this.config.privateKey) {
             this.config.privateKey = path.normalize(this.config.privateKey);

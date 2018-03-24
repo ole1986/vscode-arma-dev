@@ -24,8 +24,16 @@
         "serverDirs": {
             "description": "A list of all server folders a pbo file should be generated for"
         },
+        "serverUse32bit": {
+            "type":"boolean",
+            "description": "Use 32bit arma3server executable"
+        },
         "serverMods": {
+            "type":"array",
             "description": "Additional mods being loaded when running the server"
+        },
+        "serverParams": {
+            "description": "Additional server parameters when running the server"
         },
         "clientDirs": {
             "description": "A list of all client folders (usually one) a pbo file should be generated and signed for"

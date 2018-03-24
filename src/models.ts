@@ -8,6 +8,7 @@ export interface ArmaConfig {
     serverDirs: string[];
     serverMods: string[];
     serverParams: string;
+    serverUse32bit: boolean;
     clientDirs: string[];
     clientMods: string[];
     privateKey: string;
