@@ -93,13 +93,13 @@ export class ArmaDev {
     private loadConfig(content: string) {
         this.config = JSON.parse(content);
 
-        if(this.config.serverDirs != undefined) {
+        if (this.config.serverDirs !== undefined) {
             this.config.serverDirs.forEach((p, i) => {
                 this.config.serverDirs[i] = p.replace(/\//g, '\\');
             });
         }
 
-        if(this.config.clientDirs != undefined) {
+        if (this.config.clientDirs !== undefined) {
             this.config.clientDirs.forEach((p, i) => {
                 this.config.clientDirs[i] = p.replace(/\//g, '\\');
             });
