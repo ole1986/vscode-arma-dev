@@ -33,9 +33,11 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
             fs.mkdirSync( path.join(workingDir, config.buildPath));
         }
 
-        config.serverDirs.forEach(p => {
-            packWithFileBank(p, withPrefix).catch(reject);
-        });
+        if (config.serverDirs !== undefined) {
+            config.serverDirs.forEach(p => {
+                packWithFileBank(p, withPrefix).catch(reject);
+            });
+        }
 
         // make sure client folder exist
         let clientPath = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName);
@@ -43,9 +45,11 @@ export async function packFolder(withPrefix: boolean): Promise<string> {
             fs.mkdirSync(clientPath);
         }
 
-        config.clientDirs.forEach(p => {
-            packWithAddonBuilder(p, false, true).catch(reject);
-        });
+        if (config.clientDirs !== undefined) {
+            config.clientDirs.forEach(p => {
+                packWithAddonBuilder(p, false, true).catch(reject);
+            });
+        }
 
         addModInfo(clientPath);
     });
