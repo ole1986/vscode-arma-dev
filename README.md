@@ -25,7 +25,7 @@ Please refer to the **Configuration** section for further details
 Below you can find all available commands
 
 * `Arma 3: Configure`: to setup the project
-* `Arma 3: Pack`: to pack pbos defined in your configuration file
+* `Arma 3: Build`: to pack / build pbos defined in your configuration file
 * `Arma 3: Binarize`: binarize cpp files from explorer context menu
 * `Arma 3: UnBinarize`: Unbinarize bin files from explorer context menu
 * `Arma 3: Run Server`: start the arma3server with server mod path included

@@ -11,6 +11,11 @@ Of course, the logfile will be opened, too
 
 All done to make `Arma 3: Code Live` work more smoothly
 
+## 0.0.13
+
+* renamed command "Arma 3: Pack" to "Arma 3: Build"
+* fixed empty clientDirs and serverDirs while packing
+
 ## 0.0.12
 
 * support for 32bit arma3server (configurable)
