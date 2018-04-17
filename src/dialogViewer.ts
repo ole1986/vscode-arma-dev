@@ -129,7 +129,9 @@ export class DialogViewer {
                     let eoc = part.substr( part.length - 1 );
                     if (eoc === '}') {
                         this.openBrackets--;
-                        this.ctrlList.push(this.ctrl);
+                        if (this.ctrl !== undefined) {
+                            this.ctrlList.push(this.ctrl);
+                        }
                         this.ctrl = undefined;
                         this.token = T_CLASS;
                     }

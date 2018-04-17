@@ -72,19 +72,35 @@ export class DialogControl {
 
 
     constructor() {
-        this.factorX = 2200;
-        this.factorY = 1500;
+        this.factorX = 1500;
+        this.factorY = 1000;
     }
 
     public parseNumbers() {
-        this.posX = this.parseNumber(this.x, this.factorX);
-        this.posY = this.parseNumber(this.y, this.factorY);
-        this.width = this.parseNumber(this.w, this.factorX);
-        this.height = this.parseNumber(this.h, this.factorY);
+        this.posX = this.parseNumber(this.x) * this.getFactorX(this.x);
+        this.posY = this.parseNumber(this.y) * this.getFactorY(this.y);
+        this.width = this.parseNumber(this.w) * this.getFactorX(this.w);
+        this.height = this.parseNumber(this.h) * this.getFactorY(this.h);
     }
 
     public hasProperty(name: string) {
         return ['type', 'name', 'idc', 'idd', 'x', 'y', 'h', 'w'].indexOf(name) !== -1 ? true : false;
+    }
+
+    public getFactorX(input: string) {
+        if (input.indexOf('GUI_GRID') !== -1)
+            return this.factorX / 40;
+        else if (input.indexOf('safezone') !== -1)
+            return this.factorX * 1.5;
+        else return this.factorX;
+    }
+
+    public getFactorY(input: string) {
+        if (input.indexOf('GUI_GRID') !== -1)
+            return this.factorY / 25;
+        else if (input.indexOf('safezone') !== -1)
+            return this.factorY * 1.2;
+        else return this.factorY;
     }
 
     public getX() {
@@ -111,8 +127,8 @@ export class DialogControl {
         return this.height;
     }
 
-    private parseNumber(value: string, factor: number = 1000): number {
-        let m = value.match(/([\d\.]+)/);
-        return (parseFloat(m[1]) * factor);
+    private parseNumber(value: string): number {
+        let m = value.match(/^\s?([\d\.]+)/);
+        return parseFloat(m[1]);
     }
 }
