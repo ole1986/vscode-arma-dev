@@ -133,6 +133,8 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise
 
     return new Promise<boolean>((resolve, reject) => {
         let prefixFile;
+        let destinationPath = path.join(config.buildPath,  ArmaDev.Self.ModServerName, 'addons');
+        let fileName = path.basename(folderDir) + '.pbo';
 
         if (!fs.existsSync(fileBankPath)) {
             reject('FileBank not found');
@@ -145,8 +147,12 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise
             return;
         }
 
+        if (fs.existsSync(path.join(workingDir, destinationPath, fileName))) {
+            fs.unlinkSync(path.join(workingDir, destinationPath, fileName));
+        }
+
         logger.logInfo('Packing ' + folderDir + ' using FileBank (prefix: ' + prefixValue + ')');
-        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', path.join(config.buildPath,  ArmaDev.Self.ModServerName, 'addons'), folderDir],  { cwd: workingDir });
+        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', destinationPath, folderDir],  { cwd: workingDir });
     });
 }
 

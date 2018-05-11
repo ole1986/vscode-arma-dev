@@ -105,8 +105,3 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 * `arma-dev.logLevel`: setup the log level (Info | Debug | Error)
 * `arma-dev.dialogAxisMode`: How to display the dialog control axis (0 = truncated, 1 = original) **restart required**
-
-## TODO
-
-* implement installation command for client / server
-* allow remote file transfer of unencrypted connections
