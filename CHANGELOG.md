@@ -11,6 +11,10 @@ Of course, the logfile will be opened, too
 
 All done to make `Arma 3: Code Live` work more smoothly
 
+## 0.0.16
+
+* more user feedback using notification interface
+
 ## 0.0.15
 
 * fixed issue where FileBank does not update the server *.pbo files

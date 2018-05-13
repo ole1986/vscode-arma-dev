@@ -7,10 +7,10 @@
         "type": "git",
         "url": "https://github.com/ole1986/vscode-arma-dev"
     },
-    "version": "0.0.15",
+    "version": "0.0.16",
     "publisher": "ole1986",
     "engines": {
-        "vscode": "^1.17.0"
+        "vscode": "^1.22.0"
     },
     "categories": [
         "Other"
@@ -21,6 +21,17 @@
     ],
     "main": "./out/extension",
     "contributes": {
+        "languages": [
+            {
+                "id": "armabin",
+                "aliases": [
+                    "ArmaA Binarized"
+                ],
+                "extensions": [
+                    ".bin"
+                ]
+            }
+        ],
         "commands": [
             {
                 "command": "armadev.setupConfig",
@@ -70,10 +81,12 @@
         "menus": {
             "explorer/context": [
                 {
+                    "when": "resourceLangId == cpp",
                     "command": "armadev.binarizeFile",
                     "group": "armadev"
                 },
                 {
+                    "when": "resourceLangId == armabin",
                     "command": "armadev.unbinarizeFile",
                     "group": "armadev"
                 }

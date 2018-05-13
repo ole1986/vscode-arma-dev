@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { spawn, exec } from 'child_process';
+import { spawn, exec, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as logger from '../logger';
 
@@ -18,41 +18,42 @@ let steamPath: string;
  * For clientDirs it uses the AddonBuilder to pack only and sign the pbo files
  * @param withPrefix include the prefix ($PREFIX$ or $PBOPREFIX$)
  */
-export async function packFolder(withPrefix: boolean): Promise<string> {
+export async function packFolder(withPrefix: boolean): Promise<any> {
     steamPath = await getSteamPath();
     if (steamPath === undefined) return;
     let config = ArmaDev.Self.Config;
 
-    return new Promise<string>((resolve, reject) => {
-        if (config === undefined) {
-            reject('No configuration found');
-            return;
-        }
+    if (config === undefined) {
+        return Promise.reject('No configuration found');
+    }
 
-        if (!fs.existsSync( path.join(workingDir, config.buildPath))) {
-            fs.mkdirSync( path.join(workingDir, config.buildPath));
-        }
+    if (!fs.existsSync( path.join(workingDir, config.buildPath))) {
+        fs.mkdirSync( path.join(workingDir, config.buildPath));
+    }
 
-        if (config.serverDirs !== undefined) {
-            config.serverDirs.forEach(p => {
-                packWithFileBank(p, withPrefix).catch(reject);
-            });
-        }
+    let promises = [];
 
-        // make sure client folder exist
-        let clientPath = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName);
-        if (!fs.existsSync(clientPath)) {
-            fs.mkdirSync(clientPath);
-        }
+    if (config.serverDirs !== undefined) {
+        config.serverDirs.forEach(p => {
+            promises.push( packWithFileBank(p, withPrefix));
+        });
+    }
 
-        if (config.clientDirs !== undefined) {
-            config.clientDirs.forEach(p => {
-                packWithAddonBuilder(p, false, true).catch(reject);
-            });
-        }
+    // make sure client folder exist
+    let clientPath = path.join(workingDir, config.buildPath, ArmaDev.Self.ModClientName);
+    if (!fs.existsSync(clientPath)) {
+        fs.mkdirSync(clientPath);
+    }
 
-        addModInfo(clientPath);
-    });
+    if (config.clientDirs !== undefined) {
+        config.clientDirs.forEach(p => {
+            promises.push( packWithAddonBuilder(p, false, true));
+        });
+    }
+
+    addModInfo(clientPath);
+
+    return Promise.all(promises);
 }
 
 /**
@@ -75,7 +76,9 @@ export async function binarizeConfig(filePath: string): Promise<boolean> {
             reject('Only cpp files supported');
             return;
         }
-        spawn(cfgconvertPath, ['-bin', '-dst', destPath, filePath]).on('error', reject);
+        spawn(cfgconvertPath, ['-bin', '-dst', destPath, filePath]).on('error', reject).on('close', (code) => {
+            resolve(code === 0);
+        });
     });
 }
 
@@ -92,11 +95,20 @@ export async function unbinarizeConfig(filePath: string): Promise<boolean> {
     let destPath = path.join(path.dirname(filePath), path.basename(filePath, extName) + '.cpp');
 
     return new Promise<boolean>((resolve, reject) => {
-        if (extName !== '.bin') {
-            reject('Only bin files supported');
+        let firstBytes = new Buffer([0x00, 0x00, 0x00, 0x00]);
+
+        let f = fs.openSync(filePath, 'r');
+        fs.readSync(f, firstBytes, 0, 4, 0);
+        fs.closeSync(f);
+
+        if (firstBytes.toString() !== '\x00\x72\x61\x50' ) {
+            reject(path.basename(filePath) + ' is not a valid ArmaA binary file');
             return;
         }
-        spawn(cfgconvertPath, ['-txt', '-dst', destPath, filePath]).on('error', reject);
+
+        spawn(cfgconvertPath, ['-txt', '-dst', destPath, filePath]).on('error', reject).on('close', (code) => {
+            resolve(code === 0);
+        });
     });
 }
 
@@ -151,8 +163,11 @@ async function packWithFileBank(folderDir: string, withPrefix: boolean): Promise
             fs.unlinkSync(path.join(workingDir, destinationPath, fileName));
         }
 
-        logger.logInfo('Packing ' + folderDir + ' using FileBank (prefix: ' + prefixValue + ')');
-        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', destinationPath, folderDir],  { cwd: workingDir });
+        logger.logDebug('Packing ' + folderDir + ' using FileBank (prefix: ' + prefixValue + ')');
+
+        spawn(fileBankPath, ['-property', 'prefix=' + prefixValue, '-dst', destinationPath, folderDir],  { cwd: workingDir }).on('error', reject).on('close', (code) => {
+            resolve(code === 0);
+        });
     });
 }
 
@@ -185,10 +200,15 @@ async function packWithAddonBuilder(folderDir: string, binarize: boolean, sign: 
 
         if (sign && privateKey && fs.existsSync(fullPrivateKeyPath)) {
             args.push('-sign=' + fullPrivateKeyPath);
+        } else {
+            vscode.window.showWarningMessage('No private key found.\nCheck the privateKey path in arma-dev.json or use "Arma 3: Generate Key"');
         }
 
-        logger.logInfo('Packing ' + folderDir + ' using AddonBuilder');
-        spawn(addonBuilderPath, args, {cwd: workingDir }).on('error', reject);
+        logger.logDebug('Packing ' + folderDir + ' using AddonBuilder');
+
+        spawn(addonBuilderPath, args, {cwd: workingDir }).on('error', (err) => reject(err.message)).on('close', (code) => {
+            resolve(code === 0);
+        });
     });
 }
 
@@ -202,7 +222,7 @@ export function getPrefixFromFile(relPath: string): string {
     return fs.readFileSync(prefixFile, 'UTF-8');
 }
 
-async function addModInfo(modDir: string) {
+function addModInfo(modDir: string) {
     let config = ArmaDev.Self.Config;
     let destPath = path.join(modDir, 'mod.cpp');
     let data: string = '';

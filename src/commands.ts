@@ -53,17 +53,19 @@ export class ArmaDevCommands {
             switch (cmdName) {
                 case 'armadev.binarizeFile':
                     if (!args) {
-                        vscode.window.showInformationMessage('Please run this command from explorer context menu');
+                        vscode.window.showInformationMessage('Run this command from explorer context for *.cpp files');
                         return;
                     }
                     await armaTools.binarizeConfig(args.fsPath);
+                    vscode.window.showInformationMessage(path.basename(args.fsPath) + ' successfully binarized');
                     break;
                 case 'armadev.unbinarizeFile':
                     if (!args) {
-                        vscode.window.showInformationMessage('Please run this command from explorer context menu');
+                        vscode.window.showInformationMessage('Run this command from explorer context for *.bin files');
                         return;
                     }
                     await armaTools.unbinarizeConfig(args.fsPath);
+                    vscode.window.showInformationMessage(path.basename(args.fsPath) + ' successfully unbinarized');
                     break;
                 case 'armadev.previewControl':
                     if (!args) {
@@ -90,16 +92,19 @@ export class ArmaDevCommands {
                     break;
                 case 'armadev.packFolders':
                     await armaTools.packFolder(true);
+                    vscode.window.showInformationMessage('Arma 3: Build completed into ' + ArmaDev.Self.Config.buildPath);
                     break;
                 case 'armadev.generateKey':
                     ok = await armaTools.generateKey();
                     if (ok) {
-                        vscode.window.showQuickPick(['Yes', 'No'], { placeHolder: 'Save privateKey into configuration?' }).then((value) => {
-                            if (value === 'Yes') {
-                                ArmaDev.Self.Config.privateKey = ArmaDev.Self.Config.name + '.biprivatekey';
-                                ArmaDev.Self.saveConfig();
-                            }
+                        vscode.window.showInformationMessage('Save the private key into configuration?',
+                        { title: 'Yes', isCloseAffordance: false },
+                        { title: 'No', isCloseAffordance: false }).then((value) => {
+                            if (value.title !== 'Yes') return;
+                            ArmaDev.Self.Config.privateKey = ArmaDev.Self.Config.name + '.biprivatekey';
+                            ArmaDev.Self.saveConfig();
                         });
+                        vscode.window.showInformationMessage('BI keys successfully generated');
                     }
                     break;
                 case 'armadev.runClientAndLog':
@@ -140,6 +145,7 @@ export class ArmaDevCommands {
             // post process any registered command (if exist in configuration)
             this.postProcessCall(cmdName);
         } catch (e) {
+            vscode.window.showErrorMessage(e);
             logger.logError(e);
         }
     }
