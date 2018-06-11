@@ -7,7 +7,7 @@
         "type": "git",
         "url": "https://github.com/ole1986/vscode-arma-dev"
     },
-    "version": "0.0.16",
+    "version": "0.0.17",
     "publisher": "ole1986",
     "engines": {
         "vscode": "^1.22.0"
@@ -112,6 +112,11 @@
                     "type": "string",
                     "default": "Debug",
                     "description": "Log Level [Debug|Info|Error]"
+                },
+                "arma-dev.steamPath": {
+                    "type":"string",
+                    "default": null,
+                    "description": "The default steam path used for arma-dev (default: auto-detect)"
                 }
             }
         },

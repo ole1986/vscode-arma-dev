@@ -15,6 +15,10 @@
         "version": {
             "description": "Version number of the project being displayed on client"
         },
+        "steamPath": {
+            "default": null,
+            "description": "The default steam path used for this project (default: auto-detect)"
+        },
         "buildPath": {
             "description": "Destination folder where all packed files are being stored"
         },

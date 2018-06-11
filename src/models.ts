@@ -4,6 +4,7 @@ export interface ArmaConfig {
     author: string;
     website: string;
     version: string;
+    steamPath: string;
     buildPath: string;
     serverDirs: string[];
     serverMods: string[];

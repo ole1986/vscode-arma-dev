@@ -11,6 +11,10 @@ Of course, the logfile will be opened, too
 
 All done to make `Arma 3: Code Live` work more smoothly
 
+## 0.0.17
+
+* allow adding custom steamPath through project configuration (steamPath) or user setting (arma-dev.steamPath)
+
 ## 0.0.16
 
 * more user feedback using notification interface

@@ -6,7 +6,6 @@ import * as logger from '../logger';
 
 import { getSteamPath } from './getSteamPath';
 import { ArmaDev } from '../armadev';
-import { ArmaConfig } from '../models';
 
 const Arma3Tools = path.join('steamapps', 'common', 'Arma 3 Tools');
 let workingDir: string = vscode.workspace.workspaceFolders[0].uri.fsPath;

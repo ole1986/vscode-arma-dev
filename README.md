@@ -42,6 +42,7 @@ The configuration file is located in `.vscode/arma-dev.json` and contains the fo
 * `title`: The title of your project (no used yet)
 * `name`: The short name of the addon (this name is used as output folder)
 * `author`: author name
+* `steamPath`: The default steam path used for this project (default: auto-detect)
 * `buildPath`: destination folder of all pbo files being generated
 * `privateKey`: the private key path being used to sign the client addon
 * `serverDir`: all server directories a pbo files should be created for (E.g. core and core_config)
@@ -86,8 +87,8 @@ Please be aware of the following
 The post processing option (defined in `.vscode/arma-dev.json`) can be helpful to run additional tasks once a command has been successfully executed.
 An example of running a script when for instance *all files are transfered to the remote* can look the following:
 
-```
-"postProcess": { 
+```json
+"postProcess": {
     "transferFiles": "./restart-server.ps1"
 }
 ```
@@ -105,3 +106,4 @@ PLEASE MAKE SURE STEAM IS RUNNING AS IT IS REQUIRED FOR PACKING
 
 * `arma-dev.logLevel`: setup the log level (Info | Debug | Error)
 * `arma-dev.dialogAxisMode`: How to display the dialog control axis (0 = truncated, 1 = original) **restart required**
+* `arma-dev.steamPath`: The default steam path used for arma-dev (default: auto-detect)

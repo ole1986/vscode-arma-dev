@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-import { spawn, exec } from 'child_process';
-import * as fs from 'fs';
+import { exec } from 'child_process';
 import * as logger from '../logger';
+import { ArmaDev } from '../armadev';
+import * as fs from 'fs';
 
 let steamPath: string;
 
@@ -10,6 +10,19 @@ let steamPath: string;
  * Get the steam path by requesting the installation path from registry using reg query
  */
 export async function getSteamPath(): Promise<string> {
+    let globalSteamPath = ArmaDev.Self.Config.steamPath;
+
+    if (globalSteamPath == null || globalSteamPath === '') {
+        globalSteamPath = vscode.workspace.getConfiguration('arma-dev').get('steamPath');
+    }
+
+    if (globalSteamPath !== null && globalSteamPath !== '') {
+        if (fs.existsSync(globalSteamPath) && fs.lstatSync(globalSteamPath).isDirectory()) {
+            return Promise.resolve(globalSteamPath);
+        }
+        return Promise.reject('Invalid steam path: ' + globalSteamPath);
+    }
+
     if (steamPath !== undefined) {
         return Promise.resolve(steamPath);
     }
