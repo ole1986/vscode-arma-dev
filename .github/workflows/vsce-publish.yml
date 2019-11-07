@@ -6,14 +6,15 @@ on:
     - master
 #    release:
 #      types: [published]
-
+#
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - name: vsce publish
-      uses: sigma/vsce-publish-action@v0.0.1
-      with:
-        vsce_token: ${{ secrets.VSCE_TOKEN }}
+      - uses: actions/checkout@v1
+      - name: vsce publish
+        uses: sigma/vsce-publish-action@v0.0.1
+        with:
+          GITHUB_REPOSITORY
+          vsce_token: ${{ secrets.VSCE_TOKEN }}
+      
