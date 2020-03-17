@@ -65,7 +65,7 @@ export class ArmaDev {
                 if (!fs.existsSync(vscodeDir)) {
                     fs.mkdirSync(vscodeDir);
                 }
-                fs.writeFile(this.configPath, JSON.stringify(config, null, '\t'));
+                fs.writeFileSync(this.configPath, JSON.stringify(config, null, '\t'));
             }
 
             vscode.workspace.openTextDocument(this.configPath).then(doc => { vscode.window.showTextDocument(doc); });
