@@ -7,7 +7,7 @@
 .dialog-options a, .dialog-options a:hover {
     background-color: rgb(37, 37, 38);
     color: white;
-    padding: 1em;
+    padding: 0.5em;
 }
 
 .dialog-preview {

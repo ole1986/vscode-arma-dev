@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as logger from './logger';
 
-import { TextDocumentContentProvider } from './providers/dialogProvider';
 import { Command } from './models';
 import { ArmaDev } from './armadev';
 import * as armaTools from './helpers/armaTools';
@@ -13,9 +12,7 @@ import { DialogViewer } from './dialogViewer';
 import { clearJuncFolders, createJuncFolders, IsJuncConfigured } from './helpers/juncFolder';
 
 export class ArmaDevCommands {
-    private commandList: string[];
     private ctx: vscode.ExtensionContext;
-    private dialogProvider: TextDocumentContentProvider;
     private terminal: vscode.Terminal = vscode.window.createTerminal();
 
     constructor(context: vscode.ExtensionContext) {
@@ -30,15 +27,8 @@ export class ArmaDevCommands {
             this.registerCommand(value.command);
         });
 
-        this.registerProvider();
         this.registerCommand('armadev.previewControlOption');
         this.registerCommand('armadev.previewControlJump');
-    }
-
-    private registerProvider() {
-        this.dialogProvider = new TextDocumentContentProvider();
-        let registration = vscode.workspace.registerTextDocumentContentProvider(ArmaDev.Schema, this.dialogProvider);
-        this.ctx.subscriptions.push(registration);
     }
 
     private registerCommand(cmd) {
@@ -72,16 +62,26 @@ export class ArmaDevCommands {
                         vscode.window.showInformationMessage('Please run this command from explorer context menu');
                         return;
                     }
-                    let fileName = path.basename(args.fsPath);
-                    this.dialogProvider.setPath(args.fsPath);
-                    vscode.commands.executeCommand('vscode.previewHtml', ArmaDev.Schema + '://authority/arma-dev', vscode.ViewColumn.One, 'Dialog ' + fileName);
-                    break;
-                case 'armadev.previewControlOption':
-                    this.dialogProvider.setMode(args.mode);
-                    this.dialogProvider.Reload();
+
+                    const panel = vscode.window.createWebviewPanel(
+                        'armadevPreview',
+                        'ArmaDev : Preview',
+                        vscode.ViewColumn.One,
+                        {
+                            enableScripts: true,
+                            retainContextWhenHidden: true
+                        }
+                      );
+
+                      const dialogMode = <number>vscode.workspace.getConfiguration('arma-dev').get('dialogAxisMode', 0);
+                      const preview = new DialogViewer(this.ctx, panel.webview, { path: args.fsPath, mode: dialogMode });
+
+                      panel.onDidDispose(() => preview.dispose());
+
+                      await preview.OutputHtml();
                     break;
                 case 'armadev.previewControlJump':
-                    vscode.workspace.openTextDocument(this.dialogProvider.getPath() ).then((doc) => {
+                    vscode.workspace.openTextDocument(args.path).then((doc) => {
                         let pos = doc.positionAt(args.offset);
 
                         vscode.window.showTextDocument(doc).then((editor) => {

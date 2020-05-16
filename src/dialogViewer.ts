@@ -13,9 +13,7 @@ const T_PROPERTY_D = 2;
 const T_PROPERTY = 3;
 
 
-export class DialogViewer {
-    public static Self: DialogViewer;
-
+export class DialogViewer extends vscode.Disposable {
     private token = T_DISPLAY;
     private content: string;
     private openBrackets: number = 0;
@@ -25,48 +23,97 @@ export class DialogViewer {
 
     private ctrlList: DialogControl[] = [];
     private ctx: vscode.ExtensionContext;
+    private webview: vscode.Webview;
+    private resources: Map<string, vscode.Uri[]>;
+    private options: DialogOptions;
+    private watcher: vscode.FileSystemWatcher;
 
-    constructor(context: vscode.ExtensionContext) {
+    constructor(context: vscode.ExtensionContext, webview: vscode.Webview, options: DialogOptions) {
+        super(() => this.watcher.dispose());
+
         this.ctx = context;
-        DialogViewer.Self = this;
+        this.webview = webview;
+        this.options = options;
+
+        webview.onDidReceiveMessage(this.onMessageReceived.bind(this));
+
+        this.watcher = vscode.workspace.createFileSystemWatcher(options.path);
+        this.watcher.onDidChange(this.OutputHtml.bind(this));
+
+        this.loadResources();
     }
 
-    public async OutputHtml(opt: DialogOptions): Promise<string> {
-        let cssFile = path.join(this.ctx.extensionPath, 'resources', 'css', 'dialog-viewer.css');
-        let result: string = '';
+    private loadResources() {
+        const cssRessource = this.webview.asWebviewUri(vscode.Uri.file(
+            path.join(this.ctx.extensionPath, 'resources', 'css', 'dialog-viewer.css')
+        ));
 
-        return new Promise<string>((resolve, reject) => {
-            this.openFile(opt);
+        const jsResource = this.webview.asWebviewUri(vscode.Uri.file(
+            path.join(this.ctx.extensionPath, 'resources', 'js', 'dialog-viewer.js')
+        ));
+
+        this.resources = new Map<string, vscode.Uri[]> ([
+            ['css', [cssRessource]],
+            ['js', [jsResource]]
+        ]);
+    }
+
+    public async OutputHtml(): Promise<void> {
+
+        var ts = Math.floor(new Date().getTime() / 1000);
+
+        return new Promise<void>((resolve, reject) => {
+            this.openFile();
+            let result = '';
             this.ctrlList.forEach((val) => {
-                result += `<a href="${encodeURI('command:armadev.previewControlJump?' + JSON.stringify({offset: val.offset}))}"><div class="RscBase ${val.type}" style="left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}<br />idc=${val.idc}</div></a>`;
+                result += `<a href="javascript:void(0)" onclick="runCommand('jump', {offset: ${val.offset}})"><div class="RscBase ${val.type}" style="left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}<br />idc=${val.idc}</div></a>`;
             });
 
-            resolve(`<html>
-                    <head>
-                    <link rel="stylesheet" href="${cssFile}">
-                    </head>
-                    <body>
-                        ${this.showOptions(opt)}
-                        <div class="dialog-preview">${result}</div>
-                    </body>
-                </html>`);
+            this.webview.html = `<!DOCTYPE html>
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta http-equiv="Content-Security-Policy" content="default-src 'self' vscode-resource: 'unsafe-inline' 'unsafe-eval'; img-src * vscode-resource:" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    ${this.resources.get('css').map(x => '<link rel="stylesheet" href="' + x + '?' + ts + '" />')}
+                    ${this.resources.get('js').map(x => '<script defer src="' + x + '?' + ts + '"></script>')}
+                </head>
+                <body>
+                    ${this.showOptions()}
+                    <div class="dialog-preview">${result}</div>
+                </body>
+            </html>`;
+            resolve();
         });
     }
 
-    private showOptions(opt: DialogOptions) {
+    private onMessageReceived(message: any) {
+        switch (message.command) {
+            case 'options':
+                Object.assign(this.options, message.args);
+                break;
+            case 'jump':
+                vscode.commands.executeCommand('armadev.previewControlJump', { offset: message.args.offset, path: this.options.path });
+                break;
+        }
+
+        this.OutputHtml();
+    }
+
+    private showOptions() {
         return `
         <div class="dialog-options">
             Axis:&nbsp;
-            <a href="${encodeURI('command:armadev.previewControlOption?' + JSON.stringify({mode: 0}))}" target="_self">Truncated</a>
-            <a href="${encodeURI('command:armadev.previewControlOption?' + JSON.stringify({mode: 1}))}" target="_self">Original</a>
-            &nbsp; The default behavior can be configured with 'arma-dev.dialogAxisMode' - A restart of vscode is requred
+            <a href="javascript:void(0)" onclick="runCommand('options', {mode: 0})" target="_self">Truncated</a>
+            <a href="javascript:void(0)" onclick="runCommand('options', {mode: 1})" target="_self">Original</a>
+            &nbsp; The default behavior can be configured with 'arma-dev.dialogAxisMode'
         </div>
         `;
     }
 
-    private async openFile(opt: DialogOptions) {
+    private async openFile() {
         this.token = T_DISPLAY;
-        this.content = fs.readFileSync(opt.path, 'UTF-8');
+        this.content = fs.readFileSync(this.options.path, 'UTF-8');
 
         this.display = this.ctrl = undefined;
         this.ctrlList = [];
@@ -76,7 +123,7 @@ export class DialogViewer {
             val.parseNumbers();
         });
 
-        if (opt.mode <= 0) {
+        if (this.options.mode <= 0) {
             this.fixMargins();
         }
     }

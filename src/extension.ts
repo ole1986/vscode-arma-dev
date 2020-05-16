@@ -10,7 +10,6 @@ import { DialogViewer } from './dialogViewer';
 export function activate(context: vscode.ExtensionContext) {
     new ArmaDev();
     new ArmaDevCommands(context);
-    new DialogViewer(context);
     return armaTools;
 }
 // this method is called when your extension is deactivated
