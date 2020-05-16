@@ -7,14 +7,15 @@ import { DialogControl, DialogOptions } from './models';
 import { INSPECT_MAX_BYTES } from 'buffer';
 import { ArmaDev } from './armadev';
 
-const T_DISPLAY = 0;
-const T_CLASS = 1;
-const T_PROPERTY_D = 2;
-const T_PROPERTY = 3;
-
+enum TokenType {
+    T_DISPLAY = 0,
+    T_CLASS = 1,
+    T_PROPERTY_D = 2,
+    T_PROPERTY = 3,
+}
 
 export class DialogViewer extends vscode.Disposable {
-    private token = T_DISPLAY;
+    private token: TokenType = TokenType.T_DISPLAY;
     private content: string;
     private openBrackets: number = 0;
 
@@ -59,11 +60,11 @@ export class DialogViewer extends vscode.Disposable {
     }
 
     public async OutputHtml(): Promise<void> {
-
         var ts = Math.floor(new Date().getTime() / 1000);
+        
+        await this.openFile();
 
         return new Promise<void>((resolve, reject) => {
-            this.openFile();
             let result = '';
             this.ctrlList.forEach((val) => {
                 result += `<a href="javascript:void(0)" onclick="runCommand('jump', {offset: ${val.offset}})"><div class="RscBase ${val.type}" style="left: ${val.getX()}px; top: ${val.getY()}px; width: ${val.getWidth()}px; height: ${val.getHeight()}px;">${val.name}<br />idc=${val.idc}</div></a>`;
@@ -83,7 +84,7 @@ export class DialogViewer extends vscode.Disposable {
                     <div class="dialog-preview">${result}</div>
                 </body>
             </html>`;
-            resolve();
+            resolve();   
         });
     }
 
@@ -112,7 +113,7 @@ export class DialogViewer extends vscode.Disposable {
     }
 
     private async openFile() {
-        this.token = T_DISPLAY;
+        this.token = TokenType.T_DISPLAY;
         this.content = fs.readFileSync(this.options.path, 'UTF-8');
 
         this.display = this.ctrl = undefined;
@@ -148,12 +149,12 @@ export class DialogViewer extends vscode.Disposable {
             let m: any;
 
             switch (this.token) {
-                case T_DISPLAY:
-                case T_CLASS:
+                case TokenType.T_DISPLAY:
+                case TokenType.T_CLASS:
                 m = this.content.substr(i).indexOf('{');
                 break;
-                case T_PROPERTY_D:
-                case T_PROPERTY:
+                case TokenType.T_PROPERTY_D:
+                case TokenType.T_PROPERTY:
                 m = this.content.substr(i).indexOf(';');
                 break;
             }
@@ -166,8 +167,8 @@ export class DialogViewer extends vscode.Disposable {
                 this.parseDescriptor(part, i);
                 this.openBrackets++;
                 i += m + 1;
-            } else if (this.token === T_PROPERTY || this.token === T_PROPERTY_D) {
-                if (this.token === T_PROPERTY_D && this.openBrackets === 1 && this.parseDescriptor(part, i)) {
+            } else if (this.token === TokenType.T_PROPERTY || this.token === TokenType.T_PROPERTY_D) {
+                if (this.token === TokenType.T_PROPERTY_D && this.openBrackets === 1 && this.parseDescriptor(part, i)) {
                     i += this.content.substr(i).indexOf('{') + 1;
                     continue;
                 }
@@ -180,10 +181,13 @@ export class DialogViewer extends vscode.Disposable {
                             this.ctrlList.push(this.ctrl);
                         }
                         this.ctrl = undefined;
-                        this.token = T_CLASS;
+                        this.token = TokenType.T_CLASS;
                     }
                 }
                 i += m + 1;
+            } else if (this.openBrackets > 0) {
+                i += this.content.substr(i).indexOf('}') + 1;
+                this.openBrackets--;
             }
         }
     }
@@ -192,11 +196,11 @@ export class DialogViewer extends vscode.Disposable {
         let m = content.match(/class\s+?(\w+):?\s?(\w+)/);
         if (!m) return false;
 
-        if (this.token < T_CLASS) {
+        if (this.token < TokenType.T_CLASS) {
             // it is the display control (idd)
             this.display = new DialogControl();
             this.display.name = m[1];
-            this.token = T_PROPERTY_D;
+            this.token = TokenType.T_PROPERTY_D;
             return true;
         }
         this.ctrl = new DialogControl();
@@ -204,15 +208,15 @@ export class DialogViewer extends vscode.Disposable {
         this.ctrl.offset = pos + m.index;
         this.ctrl.name = m[1];
         this.ctrl.type = m[2];
-        this.token = T_PROPERTY;
+        this.token = TokenType.T_PROPERTY;
         return true;
     }
 
     private parseProperty(content: string): boolean {
-        if (this.token === T_PROPERTY_D && !this.display) return false;
-        if (this.token === T_PROPERTY && !this.ctrl) return false;
+        if (this.token === TokenType.T_PROPERTY_D && !this.display) return false;
+        if (this.token === TokenType.T_PROPERTY && !this.ctrl) return false;
 
-        let ctrl = (this.token === T_PROPERTY) ? this.ctrl : this.display;
+        let ctrl = (this.token === TokenType.T_PROPERTY) ? this.ctrl : this.display;
 
         let m = content.match(/([\w\[\]]+)\s?=\s?([\s\S]+)/);
         if (!m) return false;

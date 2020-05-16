@@ -63,9 +63,10 @@ export class ArmaDevCommands {
                         return;
                     }
 
+                    const filename = path.basename(args.fsPath);
                     const panel = vscode.window.createWebviewPanel(
                         'armadevPreview',
-                        'ArmaDev : Preview',
+                        `Arma 3: ${filename}`,
                         vscode.ViewColumn.One,
                         {
                             enableScripts: true,
@@ -75,10 +76,14 @@ export class ArmaDevCommands {
 
                       const dialogMode = <number>vscode.workspace.getConfiguration('arma-dev').get('dialogAxisMode', 0);
                       const preview = new DialogViewer(this.ctx, panel.webview, { path: args.fsPath, mode: dialogMode });
-
                       panel.onDidDispose(() => preview.dispose());
 
-                      await preview.OutputHtml();
+                      try {
+                        await preview.OutputHtml();  
+                      } catch {
+                        vscode.window.showErrorMessage('Arma 3: Preview parser failed on ' + filename);
+                        panel.dispose();
+                      }
                     break;
                 case 'armadev.previewControlJump':
                     vscode.workspace.openTextDocument(args.path).then((doc) => {
