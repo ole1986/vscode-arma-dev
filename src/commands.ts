@@ -79,7 +79,7 @@ export class ArmaDevCommands {
                       panel.onDidDispose(() => preview.dispose());
 
                       try {
-                        await preview.OutputHtml();  
+                        await preview.OutputHtml();
                       } catch {
                         vscode.window.showErrorMessage('Arma 3: Preview parser failed on ' + filename);
                         panel.dispose();
