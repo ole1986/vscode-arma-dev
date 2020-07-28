@@ -60,8 +60,8 @@ export class DialogViewer extends vscode.Disposable {
     }
 
     public async OutputHtml(): Promise<void> {
-        var ts = Math.floor(new Date().getTime() / 1000);
-        
+        let ts = Math.floor(new Date().getTime() / 1000);
+
         await this.openFile();
 
         return new Promise<void>((resolve, reject) => {
@@ -84,7 +84,7 @@ export class DialogViewer extends vscode.Disposable {
                     <div class="dialog-preview">${result}</div>
                 </body>
             </html>`;
-            resolve();   
+            resolve();
         });
     }
 

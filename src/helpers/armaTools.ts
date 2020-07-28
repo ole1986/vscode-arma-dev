@@ -233,5 +233,5 @@ function addModInfo(modDir: string) {
         data += 'actionName = "Website";\n';
         data += 'action = "' + config.website + '";\n';
     }
-    fs.writeFile(destPath, data);
+    fs.writeFile(destPath, data, (err) => { logger.logError(err); });
 }
