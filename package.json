@@ -7,7 +7,7 @@
         "type": "git",
         "url": "https://github.com/ole1986/vscode-arma-dev"
     },
-    "version": "0.0.19",
+    "version": "0.0.20",
     "publisher": "ole1986",
     "engines": {
         "vscode": "^1.40.0"
